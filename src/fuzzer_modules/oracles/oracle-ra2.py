@@ -28,7 +28,7 @@ from typing import Dict
 import numpy as np
 import pandas as pd
 
-sys.path.append(os.path.abspath("src/"))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..")))
 from fuzzer_modules.helpers.contestability import (
     assess_contestation_response,
     assess_adversarial_response,

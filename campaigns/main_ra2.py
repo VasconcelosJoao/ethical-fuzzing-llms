@@ -14,7 +14,7 @@ import time
 from dotenv import load_dotenv
 
 load_dotenv()
-sys.path.append(os.path.abspath("ethical_fuzzing/src/"))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
 import src.formatter as fmt
 import src.exec_module as exe

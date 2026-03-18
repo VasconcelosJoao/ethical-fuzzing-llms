@@ -21,7 +21,7 @@ def pick_scenario(
     category: str,
 ) -> Dict[str, Any]:
     """Pick a random scenario from the given category."""
-    pool = scenarios.get("scenarios", {}).get(category, [])
+    pool = scenarios_data.get("scenarios", [])
     if not pool:
         raise ValueError(f"No scenarios for category '{category}'")
     return random.choice(pool)
@@ -54,7 +54,7 @@ def pick_adversarial(templates: Dict[str, Any], register: str) -> Dict[str, Any]
 def fuzz_ra2(
     seed_row,
     k: int,
-    scenarios_path: str = "data/ra2/scenarios.yaml",
+    scenarios_dir: str = "data/ra2/templates",
     contestation_path: str = "data/ra2/templates/contestation.yaml",
     adversarial_path: str = "data/ra2/templates/adversarial.yaml",
 ) -> List[Dict[str, Any]]:
@@ -76,7 +76,7 @@ def fuzz_ra2(
         - test_type: "contestation" or "adversarial"
         - meta: scenario and template info
     """
-    scenarios_data = read_yaml(scenarios_path)
+    scenarios_data = read_yaml(f"{scenarios_dir}/{seed_row.scenario_category}.yaml")
 
     if seed_row.test_type == "contestation":
         challenge_data = read_yaml(contestation_path)

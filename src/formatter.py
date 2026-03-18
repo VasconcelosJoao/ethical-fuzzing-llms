@@ -38,6 +38,11 @@ TYPE_TO_OPENAI_ROLE = {
     "assistant_decision": "assistant",  # ← CRÍTICO: resposta do modelo
 }
 
+GEMINI_ROLE_MAP = {
+    "user": "user",
+    "assistant": "model",
+}
+
 @dataclass
 class ChatTurn:
     role: OpenAIRole

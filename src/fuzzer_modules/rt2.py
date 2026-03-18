@@ -54,7 +54,7 @@ def pick_template(
     domain: str,
 ) -> Dict[str, Any]:
     """Pick a random template from the given domain."""
-    pool = templates_data.get("templates", {}).get(domain, [])
+    pool = templates_data.get("templates", [])
     if not pool:
         raise ValueError(f"No templates for domain '{domain}'")
     return random.choice(pool)
@@ -104,7 +104,7 @@ def fuzz_rt2(
     List of dicts with paired prompts and metadata.
     """
     perturbations = read_yaml(perturbations_path)
-    templates_data = read_yaml(f"{templates_dir}/decision.yaml")
+    templates_data = read_yaml(f"{templates_dir}/{seed_row.template_key}.yaml")
 
     results: List[Dict[str, Any]] = []
 

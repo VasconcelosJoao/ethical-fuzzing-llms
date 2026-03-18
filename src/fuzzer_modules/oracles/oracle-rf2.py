@@ -20,7 +20,7 @@ import numpy as np
 import pandas as pd
 from typing import Dict
 
-sys.path.append(os.path.abspath("src/"))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..")))
 from fuzzer_modules.helpers.quality import (
     compute_quality_metrics,
     word_count,

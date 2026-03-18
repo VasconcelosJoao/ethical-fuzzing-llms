@@ -42,7 +42,7 @@ def read_yaml(path: str) -> Dict[str, Any]:
 
 def pick_pair(pairs_data: Dict[str, Any], category: str) -> Dict[str, Any]:
     """Pick a random metamorphic pair from the given category."""
-    pool = pairs_data.get("pairs", {}).get(category, [])
+    pool = pairs_data.get("pairs", [])
     if not pool:
         raise ValueError(f"No pairs for category '{category}'")
     return random.choice(pool)
@@ -66,7 +66,7 @@ def pick_explanation_template(
 def fuzz_rt1(
     seed_row,
     k: int,
-    pairs_path: str = "data/rt1/pairs.yaml",
+    pairs_dir: str = "data/rt1/templates",
     explanation_path: str = "data/rt1/templates/explanation_request.yaml",
 ) -> List[Dict[str, Any]]:
     """Generate *k* test variants for one seed.
@@ -89,7 +89,7 @@ def fuzz_rt1(
         - explanation_request: follow-up (Turn 2)
         - explanation_level: basic / detailed / challenge
     """
-    pairs_data = read_yaml(pairs_path)
+    pairs_data = read_yaml(f"{pairs_dir}/{category}.yaml")
     explanation_data = read_yaml(explanation_path)
 
     results: List[Dict[str, Any]] = []

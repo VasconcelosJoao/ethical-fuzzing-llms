@@ -51,7 +51,6 @@ def pick_perturbation_pair(
 
 def pick_template(
     templates_data: Dict[str, Any],
-    domain: str,
 ) -> Dict[str, Any]:
     """Pick a random template from the given domain."""
     pool = templates_data.get("templates", [])

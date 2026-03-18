@@ -67,7 +67,7 @@ def fuzz_rt1(
     seed_row,
     k: int,
     pairs_dir: str = "data/rt1/templates",
-    explanation_path: str = "data/rt1/templates/explanation_request.yaml",
+    explanation_path: str = "data/rt1/explanation_request.yaml",
 ) -> List[Dict[str, Any]]:
     """Generate *k* test variants for one seed.
 
@@ -89,7 +89,7 @@ def fuzz_rt1(
         - explanation_request: follow-up (Turn 2)
         - explanation_level: basic / detailed / challenge
     """
-    pairs_data = read_yaml(f"{pairs_dir}/{category}.yaml")
+    pairs_data = read_yaml(f"{pairs_dir}/{seed_row.pair_category}.yaml")
     explanation_data = read_yaml(explanation_path)
 
     results: List[Dict[str, Any]] = []

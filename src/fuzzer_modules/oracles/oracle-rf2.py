@@ -20,7 +20,7 @@ import numpy as np
 import pandas as pd
 from typing import Dict
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 from fuzzer_modules.helpers.quality import (
     compute_quality_metrics,
     word_count,
@@ -205,8 +205,6 @@ def summarize(df: pd.DataFrame) -> dict:
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    from typing import Dict
-
     files = [
         "outputs/rf2_deepseek_deepseek-chat.csv",
         "outputs/rf2_openai_gpt-5.2.csv",

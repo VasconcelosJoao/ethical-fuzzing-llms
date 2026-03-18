@@ -21,7 +21,7 @@ def pick_scenario(
     category: str,
 ) -> Dict[str, Any]:
     """Pick a random scenario from the given category."""
-    pool = scenarios_data.get("scenarios", [])
+    pool = scenarios.get("scenarios", [])
     if not pool:
         raise ValueError(f"No scenarios for category '{category}'")
     return random.choice(pool)
@@ -55,8 +55,8 @@ def fuzz_ra2(
     seed_row,
     k: int,
     scenarios_dir: str = "data/ra2/templates",
-    contestation_path: str = "data/ra2/templates/contestation.yaml",
-    adversarial_path: str = "data/ra2/templates/adversarial.yaml",
+    contestation_path: str = "data/ra2/contestation.yaml"
+    adversarial_path: str = "data/ra2/adversarial.yaml"
 ) -> List[Dict[str, Any]]:
     """Generate *k* multi-turn test variants for one seed.
 

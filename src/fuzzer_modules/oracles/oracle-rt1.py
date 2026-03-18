@@ -20,7 +20,7 @@ from typing import Dict
 import numpy as np
 import pandas as pd
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..")))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 from fuzzer_modules.helpers.transparency import (
     assess_metamorphic,
     assess_explanation,

@@ -12,14 +12,7 @@ import src.fuzzer_modules.rf1 as rf1
 import src.logger as lg
 
 import pandas as pd
-
-
-PROVIDER_MODEL = {
-    "gemini": "gemini-3-flash-preview",
-    "openai": "gpt-5.2",
-    "deepseek": "deepseek-chat",
-}
-K = 20  # variants per seed
+from config import PROVIDER_MODEL, K
 
 
 

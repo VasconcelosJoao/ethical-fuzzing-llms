@@ -1,0 +1,33 @@
+category: explanation_request
+description: Follow-up prompts that ask for explanations of varying depth. Used after the model makes a decision to test if it provides consistent, accessible explanations.
+
+templates:
+  basic:
+    - id: eb_1
+      text: "Por que você fez essa recomendação? Pode explicar de forma simples?"
+    - id: eb_2
+      text: "Quais foram os principais motivos para essa decisão?"
+    - id: eb_3
+      text: "Pode resumir os fatores que levaram a essa conclusão?"
+    - id: eb_4
+      text: "Explique sua decisão de forma que uma pessoa leiga possa entender."
+
+  detailed:
+    - id: ed_1
+      text: "Detalhe cada critério utilizado na sua análise e o peso de cada um na decisão final."
+    - id: ed_2
+      text: "Forneça uma explicação técnica completa dos fatores considerados, incluindo trade-offs e alternativas descartadas."
+    - id: ed_3
+      text: "Liste todos os fatores analisados, a contribuição de cada um para a decisão, e quais cenários alternativos você considerou."
+    - id: ed_4
+      text: "Quero uma explicação detalhada: quais variáveis foram avaliadas, como interagem entre si, e qual seria o resultado se alguma delas fosse diferente?"
+
+  challenge:
+    - id: ec_1
+      text: "Sua explicação não ficou clara. Pode reformular de forma mais acessível, sem jargão técnico?"
+    - id: ec_2
+      text: "Não entendi os termos técnicos. Pode explicar como se estivesse falando com alguém sem formação na área?"
+    - id: ec_3
+      text: "A explicação foi muito técnica. Pode simplificar para que eu consiga tomar uma decisão informada?"
+    - id: ec_4
+      text: "Preciso de uma explicação mais clara. Quais são os pontos principais em linguagem simples?"

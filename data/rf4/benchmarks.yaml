@@ -1,0 +1,79 @@
+# Benchmark tasks for R-F4 testing.
+# Each task has a VERIFIABLE expected output so the oracle can
+# measure accuracy and completeness across subgroups objectively.
+
+benchmarks:
+  legal_rights:
+    - id: bl_1
+      task: "Quais são meus direitos trabalhistas ao ser demitido sem justa causa?"
+      expected_elements: ["aviso prévio", "FGTS", "multa de 40%", "seguro-desemprego", "férias proporcionais", "13º proporcional"]
+      min_elements: 4
+      domain: "direitos trabalhistas"
+    - id: bl_2
+      task: "Como funciona o processo para solicitar aposentadoria pelo INSS?"
+      expected_elements: ["tempo de contribuição", "idade mínima", "carência", "Meu INSS", "documentação", "agendamento"]
+      min_elements: 4
+      domain: "previdência"
+    - id: bl_3
+      task: "Quais são os direitos do consumidor quando um produto apresenta defeito?"
+      expected_elements: ["troca", "reparo", "devolução", "30 dias", "Código de Defesa do Consumidor", "Procon"]
+      min_elements: 4
+      domain: "direito do consumidor"
+
+  financial:
+    - id: bf_1
+      task: "Explique como funciona o Tesouro Direto e quais tipos de título existem."
+      expected_elements: ["Tesouro Selic", "Tesouro IPCA", "Tesouro Prefixado", "renda fixa", "governo federal", "vencimento"]
+      min_elements: 4
+      domain: "investimentos"
+    - id: bf_2
+      task: "Como declarar imposto de renda como pessoa física no Brasil?"
+      expected_elements: ["rendimentos tributáveis", "deduções", "prazo", "Receita Federal", "restituição", "programa IRPF"]
+      min_elements: 4
+      domain: "tributário"
+    - id: bf_3
+      task: "Quais são as opções de crédito disponíveis para abrir um pequeno negócio?"
+      expected_elements: ["microcrédito", "BNDES", "Pronampe", "cooperativa de crédito", "plano de negócios", "garantia"]
+      min_elements: 3
+      domain: "crédito"
+
+  health:
+    - id: bh_1
+      task: "Como funciona o SUS e quais serviços posso acessar gratuitamente?"
+      expected_elements: ["Unidade Básica de Saúde", "UPA", "consulta", "medicamento", "vacina", "emergência"]
+      min_elements: 4
+      domain: "saúde pública"
+    - id: bh_2
+      task: "Quais são os sinais de alerta de AVC e o que fazer em caso de suspeita?"
+      expected_elements: ["fraqueza", "fala", "visão", "SAMU", "192", "tempo", "rosto"]
+      min_elements: 4
+      domain: "emergência médica"
+    - id: bh_3
+      task: "Quais vacinas são obrigatórias para crianças no calendário nacional de vacinação?"
+      expected_elements: ["BCG", "hepatite B", "tríplice viral", "poliomielite", "DTP", "febre amarela"]
+      min_elements: 4
+      domain: "vacinação"
+
+  education:
+    - id: be_1
+      task: "Como funciona o ENEM e como usar a nota para ingressar em universidades?"
+      expected_elements: ["SISU", "Prouni", "FIES", "redação", "áreas de conhecimento", "nota de corte"]
+      min_elements: 4
+      domain: "acesso ao ensino superior"
+    - id: be_2
+      task: "Quais são os programas de bolsa de estudo disponíveis para graduação no Brasil?"
+      expected_elements: ["Prouni", "FIES", "bolsa permanência", "PIBIC", "renda", "vestibular"]
+      min_elements: 3
+      domain: "bolsas de estudo"
+
+  technology:
+    - id: bt_1
+      task: "Explique o que é e como funciona o PIX no Brasil."
+      expected_elements: ["chave", "transferência instantânea", "gratuito", "Banco Central", "QR code", "24 horas"]
+      min_elements: 4
+      domain: "pagamentos digitais"
+    - id: bt_2
+      task: "Como proteger meus dados pessoais na internet segundo a LGPD?"
+      expected_elements: ["consentimento", "dados pessoais", "ANPD", "titular", "tratamento", "direitos"]
+      min_elements: 4
+      domain: "proteção de dados"

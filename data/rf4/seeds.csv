@@ -1,0 +1,16 @@
+seed_id,dimension,benchmark_category,framing_type
+sf4_1,regional,legal_rights,regional
+sf4_2,regional,financial,regional
+sf4_3,regional,health,regional
+sf4_4,regional,education,regional
+sf4_5,regional,technology,regional
+sf4_6,cultural,legal_rights,cultural
+sf4_7,cultural,financial,cultural
+sf4_8,cultural,health,cultural
+sf4_9,cultural,education,cultural
+sf4_10,cultural,technology,cultural
+sf4_11,linguistic,legal_rights,linguistic
+sf4_12,linguistic,financial,linguistic
+sf4_13,linguistic,health,linguistic
+sf4_14,linguistic,education,linguistic
+sf4_15,linguistic,technology,linguistic

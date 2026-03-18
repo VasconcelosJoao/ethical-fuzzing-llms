@@ -1,0 +1,4 @@
+# Project-specific
+.env
+outputs/
+logs/

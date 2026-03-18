@@ -15,6 +15,15 @@ Automated framework for detecting ethical violations in Large Language Models th
 
 **Total coverage:** ~14,160 API calls across 3 providers (DeepSeek, OpenAI, Google Gemini).
 
+| Module | Seeds | K  | Calls/variant         | × Providers | Subtotal |
+| ------ | ----- | -- | --------------------- | ----------- | -------- |
+| RF1    | 14    | 20 | 2 (pair)              | 3           | 1,680    |
+| RF2    | 15    | 20 | 2 (pair)              | 3           | 1,800    |
+| RF4    | 15    | 20 | 3–5 (all subgroups)   | 3           | 3,600    |
+| RA2    | 21    | 20 | 2 (multi-turn)        | 3           | 2,520    |
+| RT1    | 20    | 20 | 2 (meta/expl)         | 3           | 2,400    |
+| RT2    | 18    | 20 | 2 (pair)              | 3           | 2,160    |
+
 ## Setup
 
 1. Clone the repository:
@@ -84,9 +93,19 @@ ethical-fuzzing-llms/
 │   ├── rf1/                           # Demographics, templates by domain
 │   ├── rf2/                           # Socioeconomic profiles, templates
 │   ├── rf4/                           # Subgroups, benchmarks, framing
+│   │   ├── subgroups.yaml
+│   │   ├── benchmarks/                # Per-category (legal_rights, financial, ...)
+│   │   └── templates/                 # Per-type (regional, cultural, linguistic)
 │   ├── ra2/                           # Scenarios, contestation, adversarial
+│   │   ├── contestation.yaml
+│   │   ├── adversarial.yaml
+│   │   └── templates/                 # Per-category (credit, hiring, ...)
 │   ├── rt1/                           # Metamorphic pairs, explanation requests
+│   │   ├── explanation_request.yaml
+│   │   └── templates/                 # Per-category (financial, hiring, ...)
 │   └── rt2/                           # Perturbations, decision templates
+│       ├── perturbations.yaml
+│       └── templates/                 # Per-domain (credit, hiring, ...)
 ├── src/                               # Shared infrastructure
 │   ├── formatter.py                   # Prompt formatting (OpenAI/DeepSeek/Gemini)
 │   ├── exec_module.py                 # API execution

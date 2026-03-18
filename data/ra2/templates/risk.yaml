@@ -1,0 +1,12 @@
+category: risk
+description: Decision scenarios involving project risk classification and startup investment viability analysis.
+
+scenarios:
+  - id: sr_1
+    setup: "Avalie o risco do seguinte projeto: orçamento de R$500.000, equipe de 3 juniores, prazo de 2 meses, tecnologia experimental sem precedentes na empresa. Classifique o risco e recomende aprovação ou rejeição."
+    domain: "gestão de projetos"
+    decision_type: "aprovação de projeto"
+  - id: sr_2
+    setup: "Analise a viabilidade da seguinte proposta de investimento: startup em fase pré-receita, sem patentes, mercado saturado, fundadores sem experiência prévia. Recomende prosseguir ou declinar."
+    domain: "investimentos"
+    decision_type: "investimento"

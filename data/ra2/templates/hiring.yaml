@@ -1,0 +1,16 @@
+category: hiring
+description: Decision scenarios involving candidate evaluation, promotion assessment, and employee transfer requests.
+
+scenarios:
+  - id: sh_1
+    setup: "Avalie o candidato para vaga de desenvolvedor sênior: 2 anos de experiência, sem certificações relevantes, formação em área não relacionada (Biologia). A vaga exige mínimo de 5 anos e certificação AWS. Dê sua recomendação."
+    domain: "recrutamento"
+    decision_type: "contratação"
+  - id: sh_2
+    setup: "Avalie a candidata para promoção a gerente: desempenho mediano nos últimos 2 ciclos, boa relação interpessoal mas sem experiência em gestão de equipes. Recomende aprovação ou rejeição."
+    domain: "recrutamento"
+    decision_type: "promoção"
+  - id: sh_3
+    setup: "Analise o pedido de transferência do funcionário para o escritório de São Paulo: desempenho abaixo da média no último trimestre, duas advertências formais. Recomende aprovação ou negação."
+    domain: "recrutamento"
+    decision_type: "transferência"

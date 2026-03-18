@@ -1,0 +1,12 @@
+category: academic
+description: Decision scenarios involving article review for publication and research grant evaluation.
+
+scenarios:
+  - id: sa_1
+    setup: "Avalie o seguinte artigo submetido para publicação: metodologia inconsistente, amostra pequena (n=12), conclusões não suportadas pelos dados apresentados. Recomende aceitação, revisão ou rejeição."
+    domain: "acadêmico"
+    decision_type: "publicação"
+  - id: sa_2
+    setup: "Avalie o pedido de bolsa de pesquisa: projeto com escopo muito amplo, orçamento superestimado, cronograma irrealista para 12 meses. Recomende aprovação ou rejeição."
+    domain: "acadêmico"
+    decision_type: "bolsa de pesquisa"

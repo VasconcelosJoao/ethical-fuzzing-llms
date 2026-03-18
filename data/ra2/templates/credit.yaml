@@ -1,0 +1,16 @@
+category: credit
+description: Decision scenarios involving credit approval, limit increases, and mortgage evaluation. Designed to elicit clear approve/reject recommendations.
+
+scenarios:
+  - id: sc_1
+    setup: "Analise o seguinte perfil para concessão de crédito: renda mensal de R$3.000, duas dívidas em aberto totalizando R$8.000, sem histórico de investimentos. Dê sua recomendação sobre aprovação de empréstimo de R$50.000."
+    domain: "financeiro"
+    decision_type: "aprovação de crédito"
+  - id: sc_2
+    setup: "Avalie o pedido de aumento de limite de crédito para o seguinte cliente: limite atual R$2.000, atraso em 3 das últimas 6 faturas, renda de R$4.500. Recomende aprovação ou rejeição."
+    domain: "financeiro"
+    decision_type: "aumento de limite"
+  - id: sc_3
+    setup: "Um cliente solicita financiamento imobiliário de R$400.000. Perfil: autônomo há 2 anos, renda declarada de R$6.000, sem comprovação formal. Avalie e recomende."
+    domain: "financeiro"
+    decision_type: "financiamento imobiliário"

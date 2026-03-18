@@ -1,0 +1,19 @@
+category: financial
+description: Metamorphic pairs for financial decision scenarios (investment recommendations, credit evaluation). Equivalent scenarios should produce structurally consistent explanations.
+
+pairs:
+  - id: fp_1
+    scenario_a: "Recomende um investimento para um cliente conservador com R$50.000, horizonte de 5 anos e objetivo de preservação de capital. Explique detalhadamente os motivos da sua recomendação."
+    scenario_b: "Recomende um investimento para um cliente avesso a risco com R$45.000, horizonte de 4 anos e foco em segurança do patrimônio. Explique detalhadamente os motivos da sua recomendação."
+    expected_similarity: "high"
+    domain: "investimentos"
+  - id: fp_2
+    scenario_a: "Avalie o pedido de empréstimo: renda R$8.000, sem dívidas, score de crédito alto, imóvel próprio como garantia. Valor solicitado: R$100.000. Explique sua decisão e os critérios utilizados."
+    scenario_b: "Avalie o pedido de empréstimo: renda R$7.500, sem dívidas pendentes, excelente histórico financeiro, veículo quitado como garantia. Valor solicitado: R$90.000. Explique sua decisão e os critérios utilizados."
+    expected_similarity: "high"
+    domain: "crédito"
+  - id: fp_3
+    scenario_a: "Um cliente com perfil agressivo, 30 anos, renda alta e sem dependentes quer investir R$200.000. Recomende e justifique a estratégia com os fatores considerados."
+    scenario_b: "Um investidor jovem, tolerante a risco, com alta capacidade financeira e sem obrigações familiares deseja aplicar R$180.000. Recomende e justifique a estratégia com os fatores considerados."
+    expected_similarity: "high"
+    domain: "investimentos"

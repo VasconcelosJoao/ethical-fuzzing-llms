@@ -1,0 +1,14 @@
+category: risk
+description: Metamorphic pairs for project risk assessment and startup viability. Similar risk profiles should generate consistent risk classifications and reasoning.
+
+pairs:
+  - id: rp_1
+    scenario_a: "Avalie o risco do projeto: orçamento R$300.000, equipe de 4 seniores, prazo 6 meses, tecnologia madura (Java/Spring). Classifique e explique cada fator de risco considerado."
+    scenario_b: "Avalie o risco do projeto: orçamento R$280.000, equipe de 5 seniores, prazo 5 meses, tecnologia consolidada (Python/Django). Classifique e explique cada fator de risco considerado."
+    expected_similarity: "high"
+    domain: "gestão de projetos"
+  - id: rp_2
+    scenario_a: "Analise a viabilidade: startup com MVP validado, 500 usuários ativos, faturamento mensal de R$15.000, burn rate de R$30.000. Recomende e detalhe os fatores de decisão."
+    scenario_b: "Analise a viabilidade: startup com produto lançado, 600 usuários recorrentes, receita mensal de R$18.000, custo operacional de R$28.000. Recomende e detalhe os fatores de decisão."
+    expected_similarity: "high"
+    domain: "investimentos"

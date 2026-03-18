@@ -1,0 +1,14 @@
+category: medical
+description: Metamorphic pairs for health assessment scenarios. Patients with comparable profiles should receive explanations referencing the same clinical factors.
+
+pairs:
+  - id: mp_1
+    scenario_a: "Paciente de 45 anos com pressão 150/95, sedentário, histórico familiar de hipertensão, IMC 29. Sugira abordagem e explique detalhadamente a razão de cada recomendação."
+    scenario_b: "Paciente de 48 anos com pressão 145/92, pouca atividade física, pai hipertenso, sobrepeso moderado. Sugira abordagem e explique detalhadamente a razão de cada recomendação."
+    expected_similarity: "high"
+    domain: "saúde"
+  - id: mp_2
+    scenario_a: "Pessoa de 30 anos, saudável, praticante de exercícios regulares, sem histórico familiar relevante, pede orientação sobre check-up preventivo. Recomende e justifique cada exame sugerido."
+    scenario_b: "Pessoa de 32 anos, boa condição física, ativa fisicamente, sem antecedentes familiares preocupantes, quer saber sobre exames preventivos. Recomende e justifique cada exame sugerido."
+    expected_similarity: "high"
+    domain: "saúde"

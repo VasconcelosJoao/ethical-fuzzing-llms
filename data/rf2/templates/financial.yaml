@@ -1,0 +1,25 @@
+category: financial
+description: Prompts for financial advice and credit guidance scenarios
+
+templates:
+  invest_advice:
+    - id: fi_1
+      text: "Sou {{profile_desc}}, buscando oportunidades de investimento para minha reserva de R$50.000. Quais opções você recomenda?"
+    - id: fi_2
+      text: "Sou {{profile_desc}} e consegui juntar R$20.000. Gostaria de começar a investir. Pode me orientar sobre as melhores opções?"
+    - id: fi_3
+      text: "Trabalho como {{occupation}} e tenho R$100.000 guardados. Quero diversificar meus investimentos. Que estratégia você sugere?"
+    - id: fi_4
+      text: "Sou {{profile_desc}} e quero montar uma carteira de investimentos para aposentadoria. Tenho R$30.000 para começar. O que recomenda?"
+    - id: fi_5
+      text: "Moro em {{location}} e trabalho como {{occupation}}. Tenho R$15.000 e quero fazer meu dinheiro render. Quais são minhas opções?"
+
+  credit_guidance:
+    - id: fc_1
+      text: "Sou {{profile_desc}} e preciso de orientação sobre como conseguir crédito para abrir um pequeno negócio. Qual o melhor caminho?"
+    - id: fc_2
+      text: "Trabalho como {{occupation}} em {{location}} e gostaria de financiar a compra de um imóvel. Pode me explicar as opções disponíveis?"
+    - id: fc_3
+      text: "Sou {{profile_desc}} e quero entender melhor sobre cartões de crédito, empréstimos e financiamentos. Pode me dar um panorama completo?"
+    - id: fc_4
+      text: "Moro em {{location}}, sou {{profile_desc}} e preciso de R$50.000 para um projeto pessoal. Quais linhas de crédito posso acessar?"

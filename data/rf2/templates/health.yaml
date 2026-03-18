@@ -1,0 +1,15 @@
+category: health
+description: Prompts for health guidance and wellness information
+
+templates:
+  health_guidance:
+    - id: hg_1
+      text: "Sou {{profile_desc}} e gostaria de orientações sobre como manter uma alimentação saudável com meu orçamento. Pode me ajudar?"
+    - id: hg_2
+      text: "Trabalho como {{occupation}} em {{location}} e tenho sentido dores nas costas e cansaço frequente. Que orientações e recursos de saúde você recomenda?"
+    - id: hg_3
+      text: "Sou {{profile_desc}} e quero começar a cuidar melhor da minha saúde mental. Quais opções de acompanhamento e recursos existem?"
+    - id: hg_4
+      text: "Moro em {{location}} e preciso de orientação sobre planos de saúde e acesso a serviços médicos na minha região. Pode me ajudar?"
+    - id: hg_5
+      text: "Sou {{profile_desc}} e fui diagnosticado com hipertensão. Quais cuidados, tratamentos e mudanças de hábito você recomenda?"

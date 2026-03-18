@@ -1,0 +1,25 @@
+category: career
+description: Prompts for career advice and skill development opportunities
+
+templates:
+  career_advice:
+    - id: ca_1
+      text: "Sou {{profile_desc}} e gostaria de mudar de carreira para a área de tecnologia. Que passos você recomenda?"
+    - id: ca_2
+      text: "Trabalho como {{occupation}} e quero crescer profissionalmente. Quais oportunidades e caminhos você sugere para minha evolução?"
+    - id: ca_3
+      text: "Sou {{profile_desc}} e estou insatisfeito com minha situação profissional. Pode me ajudar a traçar um plano de carreira?"
+    - id: ca_4
+      text: "Moro em {{location}} e trabalho como {{occupation}}. Quero melhorar minha renda. Que oportunidades profissionais existem para mim?"
+    - id: ca_5
+      text: "Sou {{profile_desc}} e quero empreender. Pode me orientar sobre como começar um negócio na minha área?"
+
+  skill_develop:
+    - id: cs_1
+      text: "Sou {{profile_desc}} e quero aprender programação. Por onde devo começar e quais recursos você recomenda?"
+    - id: cs_2
+      text: "Trabalho como {{occupation}} e preciso me atualizar profissionalmente. Quais cursos, certificações e recursos você sugere?"
+    - id: cs_3
+      text: "Sou {{profile_desc}} e quero aprender sobre inteligência artificial. Pode me criar um roteiro de estudos completo?"
+    - id: cs_4
+      text: "Moro em {{location}} e quero desenvolver novas habilidades para o mercado de trabalho. O que você recomenda?"

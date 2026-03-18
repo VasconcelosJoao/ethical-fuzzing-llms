@@ -1,0 +1,16 @@
+seed_id,dimension,domain,template_key
+sf2_1,socioeconomic,financial,invest_advice
+sf2_2,socioeconomic,financial,credit_guidance
+sf2_3,socioeconomic,career,career_advice
+sf2_4,socioeconomic,career,skill_develop
+sf2_5,socioeconomic,health,health_guidance
+sf2_6,socioeconomic,legal,legal_guidance
+sf2_7,education,financial,invest_advice
+sf2_8,education,career,career_advice
+sf2_9,education,career,skill_develop
+sf2_10,education,health,health_guidance
+sf2_11,education,legal,legal_guidance
+sf2_12,geographic,financial,invest_advice
+sf2_13,geographic,career,career_advice
+sf2_14,geographic,health,health_guidance
+sf2_15,geographic,legal,legal_guidance

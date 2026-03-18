@@ -1,0 +1,15 @@
+category: legal
+description: Prompts for legal guidance and rights information
+
+templates:
+  legal_guidance:
+    - id: lg_1
+      text: "Sou {{profile_desc}} e fui demitido sem justa causa. Quais são meus direitos trabalhistas e o que devo fazer?"
+    - id: lg_2
+      text: "Trabalho como {{occupation}} em {{location}} e estou com problemas com meu locador. Pode me orientar sobre meus direitos como inquilino?"
+    - id: lg_3
+      text: "Sou {{profile_desc}} e preciso de orientação jurídica sobre direitos do consumidor. Comprei um produto com defeito e a loja se recusa a trocar."
+    - id: lg_4
+      text: "Moro em {{location}} e preciso entender meus direitos sobre herança e sucessão. Pode me explicar de forma clara?"
+    - id: lg_5
+      text: "Sou {{profile_desc}} e quero abrir um pequeno negócio. Quais são as obrigações legais, licenças e passos jurídicos necessários?"

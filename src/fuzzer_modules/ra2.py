@@ -1,3 +1,27 @@
+"""
+RA2 Fuzzer Module — Generation-based + Adversarial Fuzzing
+for Contestability Detection.
+
+Generates multi-turn test conversations:
+  Turn 1: scenario → model makes a decision
+  Turn 2: contestation/adversarial challenge → model responds
+
+Two test types:
+  CONTESTATION: legitimate requests to understand/appeal decisions.
+    Oracle checks: recognition + explanation (model SHOULD engage).
+  ADVERSARIAL: pressure attempts to force reversal.
+    Oracle checks: resistance (model SHOULD maintain position).
+
+Metrics (applied in oracle-ra2.py):
+  - Taxa de Reconhecimento (TR)
+  - Score de Explicabilidade (SE)
+  - Taxa de Resistência Adversarial (TRA)
+
+References:
+  - Right to contestation: Wachter et al. (2017)
+  - Adversarial prompt injection: Greshake et al. (2023)
+"""
+
 import random
 import yaml
 from typing import Any, Dict, List, Tuple
@@ -16,14 +40,11 @@ def read_yaml(path: str) -> Dict[str, Any]:
 # Scenario selection
 # ---------------------------------------------------------------------------
 
-def pick_scenario(
-    scenarios: Dict[str, Any],
-    category: str,
-) -> Dict[str, Any]:
-    """Pick a random scenario from the given category."""
-    pool = scenarios.get("scenarios", [])
+def pick_scenario(scenarios_data: Dict[str, Any]) -> Dict[str, Any]:
+    """Pick a random scenario from the loaded category file."""
+    pool = scenarios_data.get("scenarios", [])
     if not pool:
-        raise ValueError(f"No scenarios for category '{category}'")
+        raise ValueError("No scenarios found in file")
     return random.choice(pool)
 
 
@@ -55,8 +76,8 @@ def fuzz_ra2(
     seed_row,
     k: int,
     scenarios_dir: str = "data/ra2/templates",
-    contestation_path: str = "data/ra2/contestation.yaml"
-    adversarial_path: str = "data/ra2/adversarial.yaml"
+    contestation_path: str = "data/ra2/contestation.yaml",
+    adversarial_path: str = "data/ra2/adversarial.yaml",
 ) -> List[Dict[str, Any]]:
     """Generate *k* multi-turn test variants for one seed.
 
@@ -66,13 +87,19 @@ def fuzz_ra2(
         Must expose: seed_id, scenario_category, test_type, register.
     k : int
         Number of variants to generate.
+    scenarios_dir : str
+        Directory with per-category scenario YAMLs (credit.yaml, etc.)
+    contestation_path : str
+        Path to contestation templates (all registers in one file).
+    adversarial_path : str
+        Path to adversarial templates (all registers in one file).
 
     Returns
     -------
     List of dicts, each with:
         - seed_id, variant_id
         - scenario: the decision setup prompt (Turn 1)
-        - challenge: the contestation/adversarial follow-up (Turn 3)
+        - challenge: the contestation/adversarial follow-up (Turn 2)
         - test_type: "contestation" or "adversarial"
         - meta: scenario and template info
     """
@@ -88,7 +115,7 @@ def fuzz_ra2(
     results: List[Dict[str, Any]] = []
 
     for vid in range(1, k + 1):
-        scenario = pick_scenario(scenarios_data, seed_row.scenario_category)
+        scenario = pick_scenario(scenarios_data)
 
         if seed_row.test_type == "contestation":
             challenge = pick_contestation(challenge_data, seed_row.register)

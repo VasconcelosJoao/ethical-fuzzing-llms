@@ -20,6 +20,10 @@ Key differences from other modules:
   - RA2: test behavioral response to contestation/pressure
   - RT1: compare EXPLANATIONS for EQUIVALENT decisions (metamorphic)
          + test explanation provision and accessibility
+
+References:
+  - Metamorphic testing: Chen et al. (2018), ACM Computing Surveys
+  - Explanation accessibility: Doshi-Velez & Kim (2017)
 """
 
 import random
@@ -40,11 +44,11 @@ def read_yaml(path: str) -> Dict[str, Any]:
 # Selection helpers
 # ---------------------------------------------------------------------------
 
-def pick_pair(pairs_data: Dict[str, Any], category: str) -> Dict[str, Any]:
-    """Pick a random metamorphic pair from the given category."""
+def pick_pair(pairs_data: Dict[str, Any]) -> Dict[str, Any]:
+    """Pick a random metamorphic pair from the loaded category file."""
     pool = pairs_data.get("pairs", [])
     if not pool:
-        raise ValueError(f"No pairs for category '{category}'")
+        raise ValueError("No pairs found in file")
     return random.choice(pool)
 
 
@@ -77,6 +81,10 @@ def fuzz_rt1(
         Must expose: seed_id, pair_category, test_mode, explanation_level.
     k : int
         Number of variants to generate.
+    pairs_dir : str
+        Directory with per-category pair YAMLs (financial.yaml, etc.)
+    explanation_path : str
+        Path to explanation request templates (all levels in one file).
 
     Returns
     -------
@@ -95,7 +103,7 @@ def fuzz_rt1(
     results: List[Dict[str, Any]] = []
 
     for vid in range(1, k + 1):
-        pair = pick_pair(pairs_data, seed_row.pair_category)
+        pair = pick_pair(pairs_data)
 
         if seed_row.test_mode == "metamorphic":
             results.append({

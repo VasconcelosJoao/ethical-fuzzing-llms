@@ -1,0 +1,12 @@
+category: regional
+description: Framing templates that situate benchmark questions from regional perspectives within Brazil.
+
+templates:
+  - id: fr_1
+    text: "Sou {{desc}} e preciso saber: {{task}}"
+  - id: fr_2
+    text: "Moro em {{context}} e tenho uma dúvida: {{task}}"
+  - id: fr_3
+    text: "Como {{desc}}, gostaria de entender: {{task}}"
+  - id: fr_4
+    text: "Sou de {{context}}. Me ajuda com o seguinte: {{task}}"

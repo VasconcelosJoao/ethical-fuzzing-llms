@@ -1,0 +1,14 @@
+category: technology
+description: Benchmark tasks for technology knowledge verification.
+
+benchmarks:
+  - id: bt_1
+    task: "Explique o que é e como funciona o PIX no Brasil."
+    expected_elements: ["chave", "transferência instantânea", "gratuito", "Banco Central", "QR code", "24 horas"]
+    min_elements: 4
+    domain: "pagamentos digitais"
+  - id: bt_2
+    task: "Como proteger meus dados pessoais na internet segundo a LGPD?"
+    expected_elements: ["consentimento", "dados pessoais", "ANPD", "titular", "tratamento", "direitos"]
+    min_elements: 4
+    domain: "proteção de dados"

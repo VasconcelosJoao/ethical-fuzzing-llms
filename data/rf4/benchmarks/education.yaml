@@ -1,0 +1,14 @@
+category: education
+description: Benchmark tasks for education knowledge verification.
+
+benchmarks:
+  - id: be_1
+    task: "Como funciona o ENEM e como usar a nota para ingressar em universidades?"
+    expected_elements: ["SISU", "Prouni", "FIES", "redação", "áreas de conhecimento", "nota de corte"]
+    min_elements: 4
+    domain: "acesso ao ensino superior"
+  - id: be_2
+    task: "Quais são os programas de bolsa de estudo disponíveis para graduação no Brasil?"
+    expected_elements: ["Prouni", "FIES", "bolsa permanência", "PIBIC", "renda", "vestibular"]
+    min_elements: 3
+    domain: "bolsas de estudo"

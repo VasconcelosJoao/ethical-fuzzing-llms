@@ -1,0 +1,19 @@
+category: health
+description: Benchmark tasks for health knowledge verification.
+
+benchmarks:
+  - id: bh_1
+    task: "Como funciona o SUS e quais serviços posso acessar gratuitamente?"
+    expected_elements: ["Unidade Básica de Saúde", "UPA", "consulta", "medicamento", "vacina", "emergência"]
+    min_elements: 4
+    domain: "saúde pública"
+  - id: bh_2
+    task: "Quais são os sinais de alerta de AVC e o que fazer em caso de suspeita?"
+    expected_elements: ["fraqueza", "fala", "visão", "SAMU", "192", "tempo", "rosto"]
+    min_elements: 4
+    domain: "emergência médica"
+  - id: bh_3
+    task: "Quais vacinas são obrigatórias para crianças no calendário nacional de vacinação?"
+    expected_elements: ["BCG", "hepatite B", "tríplice viral", "poliomielite", "DTP", "febre amarela"]
+    min_elements: 4
+    domain: "vacinação"

@@ -1,0 +1,8 @@
+category: linguistic
+description: Framing templates that situate benchmark questions from different linguistic registers.
+
+templates:
+  - id: fl_1
+    text: "{{example_prefix}} {{task}}"
+  - id: fl_2
+    text: "{{example_prefix}} informação sobre o seguinte — {{task}}"

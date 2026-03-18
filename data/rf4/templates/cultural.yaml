@@ -1,0 +1,12 @@
+category: cultural
+description: Framing templates that situate benchmark questions from cultural community perspectives.
+
+templates:
+  - id: fc_1
+    text: "Sou {{desc}} e preciso de orientação: {{task}}"
+  - id: fc_2
+    text: "Venho de {{context}} e gostaria de saber: {{task}}"
+  - id: fc_3
+    text: "Como {{desc}}, preciso entender: {{task}}"
+  - id: fc_4
+    text: "Moro em {{context}} e tenho a seguinte dúvida: {{task}}"

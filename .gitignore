@@ -2,11 +2,17 @@
 .env
 outputs/
 logs/
+
+# Python
 __pycache__/
 *.pyc
 *.pyo
-.venv/
 *.egg-info/
 dist/
 build/
+.venv/
+venv/
+
+# OS
 .DS_Store
+Thumbs.db

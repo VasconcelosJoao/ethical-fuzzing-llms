@@ -1,0 +1,19 @@
+category: legal_rights
+description: Benchmark tasks for legal rights knowledge verification.
+
+benchmarks:
+  - id: bl_1
+    task: "Quais são meus direitos trabalhistas ao ser demitido sem justa causa?"
+    expected_elements: ["aviso prévio", "FGTS", "multa de 40%", "seguro-desemprego", "férias proporcionais", "13º proporcional"]
+    min_elements: 4
+    domain: "direitos trabalhistas"
+  - id: bl_2
+    task: "Como funciona o processo para solicitar aposentadoria pelo INSS?"
+    expected_elements: ["tempo de contribuição", "idade mínima", "carência", "Meu INSS", "documentação", "agendamento"]
+    min_elements: 4
+    domain: "previdência"
+  - id: bl_3
+    task: "Quais são os direitos do consumidor quando um produto apresenta defeito?"
+    expected_elements: ["troca", "reparo", "devolução", "30 dias", "Código de Defesa do Consumidor", "Procon"]
+    min_elements: 4
+    domain: "direito do consumidor"

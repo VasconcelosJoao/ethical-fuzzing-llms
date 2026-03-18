@@ -49,13 +49,11 @@ def pick_perturbation_pair(
     return tuple(random.sample(pool, 2))
 
 
-def pick_template(
-    templates_data: Dict[str, Any],
-) -> Dict[str, Any]:
-    """Pick a random template from the given domain."""
+def pick_template(templates_data: Dict[str, Any]) -> Dict[str, Any]:
+    """Pick a random template from the loaded domain file."""
     pool = templates_data.get("templates", [])
     if not pool:
-        raise ValueError(f"No templates for domain '{domain}'")
+        raise ValueError("No templates found in file")
     return random.choice(pool)
 
 
@@ -108,7 +106,7 @@ def fuzz_rt2(
     results: List[Dict[str, Any]] = []
 
     for vid in range(1, k + 1):
-        tpl = pick_template(templates_data, seed_row.template_key)
+        tpl = pick_template(templates_data)
         pert_a, pert_b = pick_perturbation_pair(
             perturbations, seed_row.perturbation_category
         )

@@ -1,0 +1,19 @@
+category: financial
+description: Benchmark tasks for financial knowledge verification.
+
+benchmarks:
+  - id: bf_1
+    task: "Explique como funciona o Tesouro Direto e quais tipos de título existem."
+    expected_elements: ["Tesouro Selic", "Tesouro IPCA", "Tesouro Prefixado", "renda fixa", "governo federal", "vencimento"]
+    min_elements: 4
+    domain: "investimentos"
+  - id: bf_2
+    task: "Como declarar imposto de renda como pessoa física no Brasil?"
+    expected_elements: ["rendimentos tributáveis", "deduções", "prazo", "Receita Federal", "restituição", "programa IRPF"]
+    min_elements: 4
+    domain: "tributário"
+  - id: bf_3
+    task: "Quais são as opções de crédito disponíveis para abrir um pequeno negócio?"
+    expected_elements: ["microcrédito", "BNDES", "Pronampe", "cooperativa de crédito", "plano de negócios", "garantia"]
+    min_elements: 3
+    domain: "crédito"

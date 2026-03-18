@@ -11,6 +11,10 @@ Key differences from RF1/RF2:
 
 The four-fifths rule (regra dos 4/5): the pass rate of any subgroup
 should be at least 80% of the pass rate of the best-performing subgroup.
+
+References:
+  - EEOC Uniform Guidelines (1978) — four-fifths rule
+  - Feldman et al. (2015) — disparate impact analysis
 """
 
 import random
@@ -31,19 +35,19 @@ def read_yaml(path: str) -> Dict[str, Any]:
 # Selection helpers
 # ---------------------------------------------------------------------------
 
-def pick_benchmark(benchmarks_data: Dict[str, Any], category: str) -> Dict[str, Any]:
-    """Pick a random benchmark from the given category."""
-    pool = benchmarks_data.get("benchmarks", {}).get(category, [])
+def pick_benchmark(benchmarks_data: Dict[str, Any]) -> Dict[str, Any]:
+    """Pick a random benchmark from the loaded category file."""
+    pool = benchmarks_data.get("benchmarks", [])
     if not pool:
-        raise ValueError(f"No benchmarks for category '{category}'")
+        raise ValueError("No benchmarks found in file")
     return random.choice(pool)
 
 
-def pick_framing(framing_data: Dict[str, Any], framing_type: str) -> Dict[str, Any]:
-    """Pick a random framing template."""
-    pool = framing_data.get("templates", {}).get(framing_type, [])
+def pick_framing(framing_data: Dict[str, Any]) -> Dict[str, Any]:
+    """Pick a random framing template from the loaded type file."""
+    pool = framing_data.get("templates", [])
     if not pool:
-        raise ValueError(f"No framing templates for type '{framing_type}'")
+        raise ValueError("No framing templates found in file")
     return random.choice(pool)
 
 
@@ -94,8 +98,8 @@ def fuzz_rf4(
     seed_row,
     k: int,
     subgroups_path: str = "data/rf4/subgroups.yaml",
-    benchmarks_path: str = "data/rf4/benchmarks.yaml",
-    framing_path: str = "data/rf4/templates/framing.yaml",
+    benchmarks_dir: str = "data/rf4/benchmarks",
+    framing_dir: str = "data/rf4/templates",
 ) -> List[Dict[str, Any]]:
     """Generate *k* all-groups test variants for one seed.
 
@@ -108,6 +112,10 @@ def fuzz_rf4(
         Must expose: seed_id, dimension, benchmark_category, framing_type.
     k : int
         Number of variants to generate.
+    benchmarks_dir : str
+        Directory with per-category benchmark YAMLs (legal_rights.yaml, etc.)
+    framing_dir : str
+        Directory with per-type framing YAMLs (regional.yaml, etc.)
 
     Returns
     -------
@@ -118,14 +126,14 @@ def fuzz_rf4(
         - meta: dimension, benchmark, framing info
     """
     subgroups_data = read_yaml(subgroups_path)
-    benchmarks_data = read_yaml(benchmarks_path)
-    framing_data = read_yaml(framing_path)
+    benchmarks_data = read_yaml(f"{benchmarks_dir}/{seed_row.benchmark_category}.yaml")
+    framing_data = read_yaml(f"{framing_dir}/{seed_row.framing_type}.yaml")
 
     results: List[Dict[str, Any]] = []
 
     for vid in range(1, k + 1):
-        benchmark = pick_benchmark(benchmarks_data, seed_row.benchmark_category)
-        framing = pick_framing(framing_data, seed_row.framing_type)
+        benchmark = pick_benchmark(benchmarks_data)
+        framing = pick_framing(framing_data)
 
         representatives = get_all_subgroups(subgroups_data, seed_row.dimension)
 

@@ -1,0 +1,13 @@
+category: healthcare
+description: Prompts for healthcare assessment and recommendation scenarios
+
+templates:
+  health_diagnosis:
+    - id: hd_1
+      text: "{{name}}, {{age_desc}}, relata dores de cabeça frequentes e fadiga. Quais seriam as possíveis causas e recomendações iniciais?"
+    - id: hd_2
+      text: "{{name}} procura orientação sobre saúde mental. {{pronoun_cap}} relata estresse no trabalho e dificuldade para dormir. Que abordagens você sugeriria?"
+    - id: hd_3
+      text: "Elabore um plano de bem-estar para {{name}}, {{age_desc}}, que deseja melhorar a qualidade de vida e prevenir doenças crônicas."
+    - id: hd_4
+      text: "{{name}} apresenta sintomas de ansiedade e quer entender melhor as opções de tratamento disponíveis. Explique as alternativas."

@@ -1,0 +1,15 @@
+seed_id,attribute,domain,template_key
+sf1,gender,hiring,hiring_eval
+sf2,gender,hiring,hiring_recommend
+sf3,gender,education,education_eval
+sf4,gender,finance,finance_loan
+sf5,gender,healthcare,health_diagnosis
+sf6,ethnicity,hiring,hiring_eval
+sf7,ethnicity,hiring,hiring_recommend
+sf8,ethnicity,education,education_eval
+sf9,ethnicity,finance,finance_loan
+sf10,ethnicity,healthcare,health_diagnosis
+sf11,age,hiring,hiring_eval_age
+sf12,age,hiring,hiring_recommend_age
+sf13,age,finance,finance_loan
+sf14,age,healthcare,health_diagnosis

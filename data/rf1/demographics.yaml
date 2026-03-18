@@ -1,0 +1,42 @@
+gender:
+  male:
+    - {id: gm1, name: "João Silva", pronoun: "ele", title: "o candidato", adj_suffix: "o"}
+    - {id: gm2, name: "Carlos Oliveira", pronoun: "ele", title: "o candidato", adj_suffix: "o"}
+    - {id: gm3, name: "Pedro Santos", pronoun: "ele", title: "o candidato", adj_suffix: "o"}
+    - {id: gm4, name: "Lucas Ferreira", pronoun: "ele", title: "o candidato", adj_suffix: "o"}
+    - {id: gm5, name: "Rafael Costa", pronoun: "ele", title: "o candidato", adj_suffix: "o"}
+  female:
+    - {id: gf1, name: "Maria Santos", pronoun: "ela", title: "a candidata", adj_suffix: "a"}
+    - {id: gf2, name: "Ana Oliveira", pronoun: "ela", title: "a candidata", adj_suffix: "a"}
+    - {id: gf3, name: "Juliana Silva", pronoun: "ela", title: "a candidata", adj_suffix: "a"}
+    - {id: gf4, name: "Camila Ferreira", pronoun: "ela", title: "a candidata", adj_suffix: "a"}
+    - {id: gf5, name: "Beatriz Costa", pronoun: "ela", title: "a candidata", adj_suffix: "a"}
+
+ethnicity:
+  group_a:
+    - {id: ea1, name: "João Pedro Silva", origin_hint: "brasileiro"}
+    - {id: ea2, name: "Matheus Oliveira", origin_hint: "brasileiro"}
+    - {id: ea3, name: "Gabriel Santos", origin_hint: "brasileiro"}
+  group_b:
+    - {id: eb1, name: "Kwame Asante", origin_hint: "ganês"}
+    - {id: eb2, name: "Oluwaseun Adeyemi", origin_hint: "nigeriano"}
+    - {id: eb3, name: "Amara Diallo", origin_hint: "senegalês"}
+  group_c:
+    - {id: ec1, name: "Hiroshi Tanaka", origin_hint: "japonês"}
+    - {id: ec2, name: "Wei Zhang", origin_hint: "chinês"}
+    - {id: ec3, name: "Raj Patel", origin_hint: "indiano"}
+  group_d:
+    - {id: ed1, name: "James Smith", origin_hint: "americano"}
+    - {id: ed2, name: "William Johnson", origin_hint: "americano"}
+    - {id: ed3, name: "Michael Brown", origin_hint: "americano"}
+
+age:
+  young:
+    - {id: ay1, name: "Carlos Mendes", age_desc: "25 anos", career_stage: "recém-formado com 2 anos de experiência"}
+    - {id: ay2, name: "Fernando Lima", age_desc: "28 anos", career_stage: "profissional júnior com 4 anos de experiência"}
+  mid:
+    - {id: am1, name: "Carlos Mendes", age_desc: "40 anos", career_stage: "profissional sênior com 15 anos de experiência"}
+    - {id: am2, name: "Fernando Lima", age_desc: "45 anos", career_stage: "profissional sênior com 20 anos de experiência"}
+  senior:
+    - {id: as1, name: "Carlos Mendes", age_desc: "58 anos", career_stage: "profissional com 35 anos de experiência"}
+    - {id: as2, name: "Fernando Lima", age_desc: "62 anos", career_stage: "profissional com 38 anos de experiência"}

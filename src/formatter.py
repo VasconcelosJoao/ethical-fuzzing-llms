@@ -65,13 +65,14 @@ def normalize_to_turns(messages: List[Dict[str, Any]], system_prompt: Optional[s
     return turns
 
 def format_openai(model: str, turns: List[ChatTurn], **params) -> Dict[str, Any]:
-    payload = {
-        "model": model,
-        "input": [
-            {"role": t.role, "content": [{"type": "input_text", "text": t.content}]}
-            for t in turns
-        ],
-    }
+    input_items = []
+    for t in turns:
+        content_type = "output_text" if t.role == "assistant" else "input_text"
+        input_items.append({
+            "role": t.role,
+            "content": [{"type": content_type, "text": t.content}],
+        })
+    payload = {"model": model, "input": input_items}
     payload.update(params)
     return payload
 

@@ -49,7 +49,7 @@ Automated framework for detecting ethical violations in Large Language Models th
 
 4. Configure providers and models in `config.py`.
 
-> **Note:** If your GPU is not compatible with the installed PyTorch version, add `CUDA_VISIBLE_DEVICES=""` to your `.env` file to force CPU execution for the oracle evaluation. The sentence-transformers model (`all-MiniLM-L6-v2`) runs efficiently on CPU.
+> **Note:** All oracle evaluations use deterministic metrics (TF-cosine similarity, regex-based pattern matching, lexicon-based sentiment) and do not require GPU or external ML models. Optionally, `sentence-transformers` can be installed for exploratory SBERT similarity analysis, but this metric is never used for pass/fail oracle decisions.
 
 ## Usage
 
@@ -71,18 +71,44 @@ To reduce the number of API calls for testing purposes, change `K` in `config.py
 Use `oracle_runner.py` to evaluate campaign results. This script applies the oracle labeling **and saves the labeled results back to the CSV files** in `outputs/`:
 
 ```bash
-CUDA_VISIBLE_DEVICES="" python oracle_runner.py rf1
-CUDA_VISIBLE_DEVICES="" python oracle_runner.py rf2
-CUDA_VISIBLE_DEVICES="" python oracle_runner.py rf4
-CUDA_VISIBLE_DEVICES="" python oracle_runner.py ra2
-CUDA_VISIBLE_DEVICES="" python oracle_runner.py rt1
-CUDA_VISIBLE_DEVICES="" python oracle_runner.py rt2
+python oracle_runner.py rf1
+python oracle_runner.py rf2
+python oracle_runner.py rf4
+python oracle_runner.py ra2
+python oracle_runner.py rt1
+python oracle_runner.py rt2
 
 # Or all at once:
-CUDA_VISIBLE_DEVICES="" python oracle_runner.py all
+python oracle_runner.py all
 ```
 
 Results are saved to `outputs/` as CSV files with `label` (PASS/FAIL), metric scores, and `fail_reason` columns.
+
+### Optional: SBERT exploratory metric
+
+All oracle verdicts (PASS/FAIL) use deterministic TF-cosine similarity, ensuring reproducibility across environments. For exploratory analysis, an optional SBERT-based cosine similarity (`cosine_sbert`) can be added to the output CSVs. This metric is **never** used for pass/fail decisions — it is saved as an additional column for post-hoc comparison only.
+
+To enable it:
+
+1. Install `sentence-transformers`:
+
+   ```bash
+   pip install sentence-transformers>=2.2.0
+   ```
+
+2. Run the oracle normally:
+
+   ```bash
+   python oracle_runner.py rf1
+   ```
+
+   The `cosine_sbert` column will appear automatically in the output CSV alongside the deterministic metrics.
+
+> **GPU note:** The SBERT model (`all-MiniLM-L6-v2`) runs efficiently on CPU. If your GPU is not compatible with the installed PyTorch version, force CPU execution by adding `CUDA_VISIBLE_DEVICES=""` to your `.env` file or prefixing the command:
+>
+> ```bash
+> CUDA_VISIBLE_DEVICES="" python oracle_runner.py rf1
+> ```
 
 ## Dashboard (GUI)
 

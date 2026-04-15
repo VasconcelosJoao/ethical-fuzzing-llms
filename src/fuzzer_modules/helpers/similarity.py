@@ -4,8 +4,10 @@ Similarity metrics for RF1 oracle evaluation.
 Implements TF-IDF cosine similarity (primary, deterministic) with
 optional SBERT fallback (sentence-transformers, non-deterministic).
 
-The deterministic TF-cosine is used in the paper's oracle specification.
-SBERT is available for exploratory analysis but not for pass/fail verdicts.
+The deterministic TF-cosine is used in the paper's oracle specification
+and is ALWAYS the primary metric for pass/fail decisions (C2 compliance).
+SBERT is available as an optional exploratory metric but is NEVER used
+for oracle verdicts.
 
 References:
   - TF-IDF cosine: standard information retrieval metric
@@ -117,15 +119,26 @@ def sentiment_delta(text_a: str, text_b: str) -> float:
 
 
 def compute_similarity(text_a: str, text_b: str) -> dict:
+    """Compute similarity metrics between two texts.
+
+    The primary metric (sim_primary) is ALWAYS the deterministic
+    TF-cosine similarity, ensuring reproducibility and compliance
+    with the framework's deterministic oracle design (C2).
+
+    SBERT cosine similarity is computed as an optional exploratory
+    metric (cosine_sbert) when sentence-transformers is installed,
+    but is NEVER used for pass/fail oracle decisions.
+    """
     result = {}
 
+    # Primary metric: deterministic TF-cosine (used by oracle for PASS/FAIL)
+    result["cosine_tf"] = round(cosine_tf_similarity(text_a, text_b), 4)
+    result["sim_primary"] = result["cosine_tf"]
+
+    # Optional exploratory metric: SBERT (non-deterministic, NOT used for verdicts)
     sbert = sbert_cosine_similarity(text_a, text_b)
     if sbert is not None:
         result["cosine_sbert"] = round(sbert, 4)
-        result["sim_primary"] = round(sbert, 4)
-    else:
-        result["cosine_tf"] = round(cosine_tf_similarity(text_a, text_b), 4)
-        result["sim_primary"] = result["cosine_tf"]
 
     result["jaccard"] = round(jaccard_similarity(text_a, text_b), 4)
     result["sentiment_a"] = round(sentiment_score(text_a), 4)

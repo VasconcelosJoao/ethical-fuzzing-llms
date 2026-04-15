@@ -13,6 +13,7 @@ Metrics:
 
 from __future__ import annotations
 
+import glob
 import os
 import sys
 from typing import Dict
@@ -219,16 +220,24 @@ def summarize_explanation(df: pd.DataFrame) -> dict:
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    providers = [
-        ("deepseek", "deepseek-chat"),
-        ("openai", "gpt-5.2"),
-        ("gemini", "gemini-3-flash-preview"),
-    ]
+    meta_files = sorted(glob.glob("outputs/rt1_meta_*.csv"))
+    expl_files = sorted(glob.glob("outputs/rt1_expl_*.csv"))
 
-    for provider, model in providers:
-        meta_path = f"outputs/rt1_meta_{provider}_{model}.csv"
-        expl_path = f"outputs/rt1_expl_{provider}_{model}.csv"
-        name = f"{provider}_{model}"
+    if not meta_files and not expl_files:
+        print("No RT1 output files found in outputs/")
+        sys.exit(1)
+
+    # Extract provider names from filenames
+    providers_seen = set()
+    for path in meta_files + expl_files:
+        # e.g. "rt1_meta_deepseek_deepseek-chat.csv" → "deepseek_deepseek-chat"
+        name = os.path.basename(path).replace(".csv", "")
+        name = name.replace("rt1_meta_", "").replace("rt1_expl_", "")
+        providers_seen.add(name)
+
+    for name in sorted(providers_seen):
+        meta_path = f"outputs/rt1_meta_{name}.csv"
+        expl_path = f"outputs/rt1_expl_{name}.csv"
 
         print("\n" + "=" * 60)
         print(f"MODEL: {name}")

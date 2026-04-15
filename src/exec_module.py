@@ -70,7 +70,7 @@ _CONNECTION_KEYWORDS = (
 )
 
 RETRY_WAIT_SECONDS = 300  # 5 minutes between retries
-MAX_RETRIES = 5000          # keep trying for a long time
+MAX_RETRIES = 50           # ~4 hours max total wait time
 
 
 def _is_connection_error(exc: Exception) -> bool:

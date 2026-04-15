@@ -19,8 +19,7 @@ Metrics:
 
 from __future__ import annotations
 
-import ast
-import json
+import glob
 import os
 import sys
 from typing import Dict
@@ -199,18 +198,13 @@ def summarize(df: pd.DataFrame) -> dict:
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    files = [
-        "outputs/ra2_deepseek_deepseek-chat.csv",
-        "outputs/ra2_openai_gpt-5.2.csv",
-        "outputs/ra2_gemini_gemini-3-flash-preview.csv",
-    ]
+    files = sorted(glob.glob("outputs/ra2_*.csv"))
+    if not files:
+        print("No RA2 output files found in outputs/")
+        sys.exit(1)
 
     all_summaries = []
     for path in files:
-        if not os.path.exists(path):
-            print(f"[SKIP] {path} not found")
-            continue
-
         df = pd.read_csv(path)
         df = label_rows(df)
         name = os.path.basename(path).replace(".csv", "")

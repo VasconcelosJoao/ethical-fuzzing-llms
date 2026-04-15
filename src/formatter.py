@@ -17,25 +17,22 @@ from typing import Any, Dict, List, Literal, Optional
 OpenAIRole = Literal["system", "user", "assistant"]
 
 TYPE_TO_OPENAI_ROLE = {
-    # R1 types
-    "authority": "system",
-    "confidential": "user",
-    "benign": "user",
-    "distractor": "user",
-    "task": "user",
-    "social_eng": "user",
-    "exfiltrate": "user",
-    # RF1/RF2/RF4/RT2 types (single-turn, todos user)
+    # RF1 — Discrimination (counterfactual pairs)
     "counterfactual": "user",
+    # RF2 — Unequal Access (profile-parameterized requests)
     "benefit_request": "user",
+    # RF4 — Subgroup Fairness (benchmark questions)
     "benchmark_request": "user",
+    # RT2 — Hidden Biases (invariance test pairs)
     "invariance_test": "user",
-    # RA2/RT1 types (multi-turn)
+    # RA2 — Contestability (multi-turn: scenario → challenge)
     "scenario": "user",
     "challenge": "user",
+    # RT1 — Decision Opacity (metamorphic + explanation requests)
     "decision_request": "user",
     "explanation_request": "user",
-    "assistant_decision": "assistant",  # ← CRÍTICO: resposta do modelo
+    # Shared — model response in multi-turn conversations (RA2, RT1)
+    "assistant_decision": "assistant",
 }
 
 GEMINI_ROLE_MAP = {
@@ -112,4 +109,3 @@ def format_gemini(model: str, turns, **params):
         payload["config"] = config
 
     return payload
-

@@ -12,7 +12,7 @@ from __future__ import annotations
 import json
 import os
 import uuid
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from typing import Any, Dict, Optional
 
@@ -25,6 +25,11 @@ def utc_now_iso() -> str:
 class RunLogger:
     run_id: str
     path: str
+    _file: Any = field(default=None, repr=False)
+
+    def _ensure_open(self):
+        if self._file is None or self._file.closed:
+            self._file = open(self.path, "a", encoding="utf-8")
 
     def write(self, event_type: str, payload: Dict[str, Any]) -> None:
         record = {
@@ -33,11 +38,23 @@ class RunLogger:
             "event_type": event_type,
             **payload,
         }
-        with open(self.path, "a", encoding="utf-8") as f:
-            f.write(json.dumps(record, ensure_ascii=False) + "\n")
+        self._ensure_open()
+        self._file.write(json.dumps(record, ensure_ascii=False) + "\n")
+        self._file.flush()
+
+    def close(self):
+        if self._file and not self._file.closed:
+            self._file.close()
+
+    def __del__(self):
+        self.close()
 
 
-def new_run_logger( out_dir: str = "logs", prefix: str = "run", meta: Optional[Dict[str, Any]] = None,) -> RunLogger:
+def new_run_logger(
+    out_dir: str = "logs",
+    prefix: str = "run",
+    meta: Optional[Dict[str, Any]] = None,
+) -> RunLogger:
     os.makedirs(out_dir, exist_ok=True)
     run_id = f"{prefix}_{datetime.now().strftime('%Y%m%d_%H%M%S')}_{uuid.uuid4().hex[:8]}"
     path = os.path.join(out_dir, f"{run_id}.jsonl")
@@ -50,4 +67,3 @@ def new_run_logger( out_dir: str = "logs", prefix: str = "run", meta: Optional[D
 def safe_preview(obj: Any, max_len: int = 600) -> str:
     s = str(obj)
     return s if len(s) <= max_len else s[:max_len] + "…"
-

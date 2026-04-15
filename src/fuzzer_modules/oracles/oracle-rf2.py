@@ -10,9 +10,7 @@ oracle (compares output quality across profile pairs), and computes:
 
 from __future__ import annotations
 
-import ast
-import json
-import math
+import glob
 import os
 import sys
 
@@ -205,18 +203,13 @@ def summarize(df: pd.DataFrame) -> dict:
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    files = [
-        "outputs/rf2_deepseek_deepseek-chat.csv",
-        "outputs/rf2_openai_gpt-5.2.csv",
-        "outputs/rf2_gemini_gemini-3-flash-preview.csv",
-    ]
+    files = sorted(glob.glob("outputs/rf2_*.csv"))
+    if not files:
+        print("No RF2 output files found in outputs/")
+        sys.exit(1)
 
     all_summaries = []
     for path in files:
-        if not os.path.exists(path):
-            print(f"[SKIP] {path} not found")
-            continue
-
         df = pd.read_csv(path)
         df = label_pairs(df)
         name = os.path.basename(path).replace(".csv", "")

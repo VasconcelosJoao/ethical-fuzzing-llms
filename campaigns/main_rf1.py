@@ -1,3 +1,11 @@
+"""
+main_rf1.py — Executes the RF1 (Discrimination) fuzzing campaign.
+
+For each seed, generates counterfactual prompt pairs via mutation-based
+fuzzing (substituting protected attributes), sends both prompts to each
+provider, and logs paired outputs for similarity oracle evaluation.
+"""
+
 import os
 import sys
 import time
@@ -6,40 +14,19 @@ from dotenv import load_dotenv
 load_dotenv()
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-import src.formatter as fmt
 import src.exec_module as exe
 import src.fuzzer_modules.rf1 as rf1
 import src.logger as lg
 
 import pandas as pd
-from config import PROVIDER_MODEL, K
-
-
-
-def execute_prompt(prompt_text: str, provider: str, model: str, params: dict) -> dict:
-    messages = [{"type": "counterfactual", "text": prompt_text}]
-    turns = fmt.normalize_to_turns(messages, system_prompt=params.get("system_prompt"))
-
-    if provider == "openai":
-        payload = fmt.format_openai(model, turns, **params.get("openai", {}))
-        return exe.run_openai(model, payload["input"], **params.get("openai", {}))
-
-    if provider == "deepseek":
-        payload = fmt.format_deepseek(model, turns, **params.get("deepseek", {}))
-        return exe.run_deepseek(model, payload["messages"], **params.get("deepseek", {}))
-
-    if provider == "gemini":
-        payload = fmt.format_gemini(model, turns, **params.get("gemini", {}))
-        return exe.run_gemini(model, payload["contents"], **params.get("gemini", {}))
-
-    raise ValueError(f"Unknown provider: {provider}")
+from config import PROVIDER_MODEL, K, SYSTEM_PROMPTS
 
 
 RF1_COLUMNS = [
     "provider", "model", "seed_id", "variant_id", "attribute", "domain",
     "template_id", "group_a", "profile_id_a", "prompt_a", "output_a",
     "group_b", "profile_id_b", "prompt_b", "output_b",
-    "label", "confidence",
+    "label",
 ]
 
 
@@ -52,7 +39,7 @@ def main():
         print(f"Generated {K} variant pairs for {row.seed_id}")
 
     params = {
-        "system_prompt": "You are a helpful assistant.",
+        "system_prompt": SYSTEM_PROMPTS["RF1"],
         "deepseek": {},
         "openai": {},
         "gemini": {},
@@ -73,7 +60,7 @@ def main():
             for variant in variants:
                 pairs = variant["pairs"]
                 if len(pairs) < 2:
-                    continue  # need at least a pair
+                    continue
 
                 pa, pb = pairs[0], pairs[1]
 
@@ -86,9 +73,9 @@ def main():
                 })
 
                 try:
-                    res_a = execute_prompt(pa["prompt"], provider, model, params)
+                    res_a = exe.execute_single(pa["prompt"], "counterfactual", provider, model, params)
                     time.sleep(0.4)
-                    res_b = execute_prompt(pb["prompt"], provider, model, params)
+                    res_b = exe.execute_single(pb["prompt"], "counterfactual", provider, model, params)
 
                     logger.write("variant_result", {
                         "variant_id": variant["variant_id"],
@@ -104,7 +91,7 @@ def main():
                         variant["meta"]["template_id"],
                         pa["group"], pa["profile_id"], pa["prompt"], res_a.get("text", ""),
                         pb["group"], pb["profile_id"], pb["prompt"], res_b.get("text", ""),
-                        "-", "0",
+                        "-",
                     ])
                     print(f"  ✓ {variant['variant_id']}")
 

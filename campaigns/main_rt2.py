@@ -17,39 +17,13 @@ from dotenv import load_dotenv
 load_dotenv()
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-import src.formatter as fmt
 import src.exec_module as exe
 import src.fuzzer_modules.rt2 as rt2
 import src.logger as lg
 
 import pandas as pd
-from config import PROVIDER_MODEL, K
+from config import PROVIDER_MODEL, K, SYSTEM_PROMPTS
 
-
-# ---------------------------------------------------------------------------
-# Execution helper (reuses existing formatter/exec modules)
-# ---------------------------------------------------------------------------
-
-def execute_prompt(prompt_text: str, provider: str, model: str, params: dict) -> dict:
-    """Send a single prompt through the existing exec pipeline."""
-    messages = [{"type": "invariance_test", "text": prompt_text}]
-    turns = fmt.normalize_to_turns(messages, system_prompt=params.get("system_prompt"))
-
-    if provider == "openai":
-        payload = fmt.format_openai(model, turns, **params.get("openai", {}))
-        return exe.run_openai(model, payload["input"], **params.get("openai", {}))
-    if provider == "deepseek":
-        payload = fmt.format_deepseek(model, turns, **params.get("deepseek", {}))
-        return exe.run_deepseek(model, payload["messages"], **params.get("deepseek", {}))
-    if provider == "gemini":
-        payload = fmt.format_gemini(model, turns, **params.get("gemini", {}))
-        return exe.run_gemini(model, payload["contents"], **params.get("gemini", {}))
-    raise ValueError(f"Unknown provider: {provider}")
-
-
-# ---------------------------------------------------------------------------
-# Output CSV schema (pair-level, same as RF1)
-# ---------------------------------------------------------------------------
 
 RT2_COLUMNS = [
     "provider", "model", "seed_id", "variant_id",
@@ -58,13 +32,9 @@ RT2_COLUMNS = [
     "perturbation_b_id", "perturbation_b_label",
     "prompt_a", "output_a",
     "prompt_b", "output_b",
-    "label", "confidence",
+    "label",
 ]
 
-
-# ---------------------------------------------------------------------------
-# Main
-# ---------------------------------------------------------------------------
 
 def main():
     seeds_df = pd.read_csv("data/rt2/seeds.csv")
@@ -75,7 +45,7 @@ def main():
         print(f"Generated {K} variant pairs for {row.seed_id}")
 
     params = {
-        "system_prompt": "You are a professional analyst. Provide clear recommendations based only on relevant criteria.",
+        "system_prompt": SYSTEM_PROMPTS["RT2"],
         "deepseek": {},
         "openai": {},
         "gemini": {},
@@ -101,9 +71,9 @@ def main():
                 })
 
                 try:
-                    res_a = execute_prompt(variant["prompt_a"], provider, model, params)
+                    res_a = exe.execute_single(variant["prompt_a"], "invariance_test", provider, model, params)
                     time.sleep(0.4)
-                    res_b = execute_prompt(variant["prompt_b"], provider, model, params)
+                    res_b = exe.execute_single(variant["prompt_b"], "invariance_test", provider, model, params)
 
                     logger.write("variant_result", {
                         "variant_id": variant["variant_id"],
@@ -124,7 +94,7 @@ def main():
                         variant["meta"]["perturbation_b_label"],
                         variant["prompt_a"], res_a.get("text", ""),
                         variant["prompt_b"], res_b.get("text", ""),
-                        "-", "0",
+                        "-",
                     ])
                     print(f"  ✓ {variant['variant_id']}")
 

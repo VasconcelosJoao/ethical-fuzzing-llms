@@ -11,7 +11,6 @@ import sys
 import glob
 import importlib.util
 
-os.environ.setdefault("CUDA_VISIBLE_DEVICES", "")
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "src")))
 
 import pandas as pd

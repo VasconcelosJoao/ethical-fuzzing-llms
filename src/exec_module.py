@@ -4,7 +4,10 @@ Execution Module — manages API interactions with LLM providers.
 Handles authentication, request submission, and response parsing
 for OpenAI, DeepSeek, and Google Gemini.
 
-Includes automatic retry with backoff for connection errors.
+Includes:
+  - Provider-specific run functions (run_openai, run_deepseek, run_gemini)
+  - Shared execute_single() for single-turn prompt execution
+  - Automatic retry with backoff for connection errors
 """
 
 import os
@@ -16,6 +19,9 @@ from google import genai
 from dotenv import load_dotenv
 
 load_dotenv()
+
+# Lazy import to avoid circular dependency at module level
+import src.formatter as fmt
 
 client_openai = OpenAI(
     api_key=os.environ.get("OPENAI_API_KEY", ""),
@@ -115,7 +121,7 @@ def with_retry(func):
 
 
 # ---------------------------------------------------------------------------
-# Provider execution functions
+# Provider execution functions (low-level)
 # ---------------------------------------------------------------------------
 
 @with_retry
@@ -141,3 +147,56 @@ def run_gemini(model: str, messages, **params):
     )
     text = getattr(resp, "text", None) or ""
     return {"provider": "gemini", "model": model, "raw": resp, "text": text}
+
+
+# ---------------------------------------------------------------------------
+# Shared execution helper (high-level)
+# ---------------------------------------------------------------------------
+
+def execute_single(
+    prompt_text: str,
+    msg_type: str,
+    provider: str,
+    model: str,
+    params: dict,
+) -> dict:
+    """Send a single prompt through the formatting and execution pipeline.
+
+    This is the shared entry point used by RF1, RF2, RF4, RT1, and RT2
+    campaign scripts, eliminating per-module execute_prompt() duplication.
+
+    Parameters
+    ----------
+    prompt_text : str
+        The prompt text to send.
+    msg_type : str
+        Message type for formatting (e.g. 'counterfactual', 'benefit_request').
+        Must be a key in formatter.TYPE_TO_OPENAI_ROLE.
+    provider : str
+        Provider key ('openai', 'deepseek', 'gemini').
+    model : str
+        Model identifier for the provider.
+    params : dict
+        Must contain 'system_prompt' key. May contain provider-specific
+        sub-dicts ('openai', 'deepseek', 'gemini') with extra parameters.
+
+    Returns
+    -------
+    dict with keys: provider, model, raw, text
+    """
+    messages = [{"type": msg_type, "text": prompt_text}]
+    turns = fmt.normalize_to_turns(messages, system_prompt=params.get("system_prompt"))
+
+    if provider == "openai":
+        payload = fmt.format_openai(model, turns, **params.get("openai", {}))
+        return run_openai(model, payload["input"], **params.get("openai", {}))
+
+    if provider == "deepseek":
+        payload = fmt.format_deepseek(model, turns, **params.get("deepseek", {}))
+        return run_deepseek(model, payload["messages"], **params.get("deepseek", {}))
+
+    if provider == "gemini":
+        payload = fmt.format_gemini(model, turns, **params.get("gemini", {}))
+        return run_gemini(model, payload["contents"], **params.get("gemini", {}))
+
+    raise ValueError(f"Unknown provider: {provider}")

@@ -14,52 +14,22 @@ from dotenv import load_dotenv
 load_dotenv()
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
 
-import src.formatter as fmt
 import src.exec_module as exe
 import src.fuzzer_modules.rf4 as rf4
 import src.logger as lg
 
 import pandas as pd
-from config import PROVIDER_MODEL, K
+from config import PROVIDER_MODEL, K, SYSTEM_PROMPTS
 
-
-# ---------------------------------------------------------------------------
-# Execution helper
-# ---------------------------------------------------------------------------
-
-def execute_prompt(prompt_text: str, provider: str, model: str, params: dict) -> dict:
-    """Send a single prompt."""
-    messages = [{"type": "benchmark_request", "text": prompt_text}]
-    turns = fmt.normalize_to_turns(messages, system_prompt=params.get("system_prompt"))
-
-    if provider == "openai":
-        payload = fmt.format_openai(model, turns, **params.get("openai", {}))
-        return exe.run_openai(model, payload["input"], **params.get("openai", {}))
-    if provider == "deepseek":
-        payload = fmt.format_deepseek(model, turns, **params.get("deepseek", {}))
-        return exe.run_deepseek(model, payload["messages"], **params.get("deepseek", {}))
-    if provider == "gemini":
-        payload = fmt.format_gemini(model, turns, **params.get("gemini", {}))
-        return exe.run_gemini(model, payload["contents"], **params.get("gemini", {}))
-    raise ValueError(f"Unknown provider: {provider}")
-
-
-# ---------------------------------------------------------------------------
-# Output CSV schema (one row per group per variant)
-# ---------------------------------------------------------------------------
 
 RF4_COLUMNS = [
     "provider", "model", "seed_id", "variant_id",
     "dimension", "benchmark_id", "domain", "benchmark_task",
     "group", "profile_id", "prompt", "output",
     "expected_elements", "min_elements",
-    "label", "confidence",
+    "label",
 ]
 
-
-# ---------------------------------------------------------------------------
-# Main
-# ---------------------------------------------------------------------------
 
 def main():
     seeds_df = pd.read_csv("data/rf4/seeds.csv")
@@ -70,7 +40,7 @@ def main():
         print(f"Generated {K} variants for {row.seed_id}")
 
     params = {
-        "system_prompt": "You are a helpful assistant. Provide complete and accurate information.",
+        "system_prompt": SYSTEM_PROMPTS["RF4"],
         "deepseek": {},
         "openai": {},
         "gemini": {},
@@ -97,8 +67,8 @@ def main():
 
                 for prompt_info in variant["prompts"]:
                     try:
-                        result = execute_prompt(
-                            prompt_info["prompt"], provider, model, params
+                        result = exe.execute_single(
+                            prompt_info["prompt"], "benchmark_request", provider, model, params
                         )
 
                         logger.write("group_result", {
@@ -121,7 +91,7 @@ def main():
                             result.get("text", ""),
                             "|".join(variant["benchmark"]["expected_elements"]),
                             variant["benchmark"]["min_elements"],
-                            "-", "0",
+                            "-",
                         ])
                         print(f"  ✓ {variant['variant_id']}:{prompt_info['group']}")
 

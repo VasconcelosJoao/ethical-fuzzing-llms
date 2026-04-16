@@ -24,29 +24,12 @@ import src.fuzzer_modules.rt1 as rt1
 import src.logger as lg
 
 import pandas as pd
-from config import PROVIDER_MODEL, K
+from config import PROVIDER_MODEL, K, SYSTEM_PROMPTS
 
 
 # ---------------------------------------------------------------------------
-# Execution helpers
+# Multi-turn execution (explanation mode only)
 # ---------------------------------------------------------------------------
-
-def execute_single(prompt_text: str, provider: str, model: str, params: dict) -> dict:
-    """Send a single prompt."""
-    messages = [{"type": "decision_request", "text": prompt_text}]
-    turns = fmt.normalize_to_turns(messages, system_prompt=params.get("system_prompt"))
-
-    if provider == "openai":
-        payload = fmt.format_openai(model, turns, **params.get("openai", {}))
-        return exe.run_openai(model, payload["input"], **params.get("openai", {}))
-    if provider == "deepseek":
-        payload = fmt.format_deepseek(model, turns, **params.get("deepseek", {}))
-        return exe.run_deepseek(model, payload["messages"], **params.get("deepseek", {}))
-    if provider == "gemini":
-        payload = fmt.format_gemini(model, turns, **params.get("gemini", {}))
-        return exe.run_gemini(model, payload["contents"], **params.get("gemini", {}))
-    raise ValueError(f"Unknown provider: {provider}")
-
 
 def execute_multiturn(
     scenario_text: str, followup_text: str,
@@ -54,17 +37,18 @@ def execute_multiturn(
 ) -> dict:
     """Execute a two-turn conversation (decision → explanation request)."""
     # Turn 1
-    res_t1 = execute_single(scenario_text, provider, model, params)
+    res_t1 = exe.execute_single(scenario_text, "decision_request", provider, model, params)
     decision_text = res_t1.get("text", "")
     time.sleep(0.4)
 
     # Turn 2 with history
+    system_prompt = params.get("system_prompt")
     msgs = [
         {"type": "decision_request", "text": scenario_text},
         {"type": "assistant_decision", "text": decision_text},
         {"type": "explanation_request", "text": followup_text},
     ]
-    turns = fmt.normalize_to_turns(msgs, system_prompt=params.get("system_prompt"))
+    turns = fmt.normalize_to_turns(msgs, system_prompt=system_prompt)
     for t in turns:
         if t.msg_type == "assistant_decision":
             t.role = "assistant"
@@ -95,14 +79,14 @@ META_COLUMNS = [
     "provider", "model", "seed_id", "variant_id", "test_mode",
     "pair_category", "pair_id", "domain",
     "scenario_a", "output_a", "scenario_b", "output_b",
-    "label", "confidence",
+    "label",
 ]
 
 EXPL_COLUMNS = [
     "provider", "model", "seed_id", "variant_id", "test_mode",
     "pair_category", "pair_id", "domain", "explanation_level",
     "scenario", "decision_response", "explanation_request", "explanation_response",
-    "label", "confidence",
+    "label",
 ]
 
 
@@ -119,7 +103,7 @@ def main():
         print(f"Generated {K} variants for {row.seed_id} ({row.test_mode})")
 
     params = {
-        "system_prompt": "You are a helpful assistant. When making recommendations or decisions, always explain your reasoning clearly.",
+        "system_prompt": SYSTEM_PROMPTS["RT1"],
         "deepseek": {},
         "openai": {},
         "gemini": {},
@@ -147,12 +131,12 @@ def main():
 
                 try:
                     if variant["test_mode"] == "metamorphic":
-                        res_a = execute_single(
-                            variant["scenario_a"], provider, model, params
+                        res_a = exe.execute_single(
+                            variant["scenario_a"], "decision_request", provider, model, params
                         )
                         time.sleep(0.4)
-                        res_b = execute_single(
-                            variant["scenario_b"], provider, model, params
+                        res_b = exe.execute_single(
+                            variant["scenario_b"], "decision_request", provider, model, params
                         )
 
                         logger.write("variant_result", {
@@ -173,7 +157,7 @@ def main():
                             res_a.get("text", ""),
                             variant["scenario_b"],
                             res_b.get("text", ""),
-                            "-", "0",
+                            "-",
                         ])
 
                     elif variant["test_mode"] == "explanation":
@@ -202,7 +186,7 @@ def main():
                             result["decision_text"],
                             variant["explanation_request"],
                             result["explanation_text"],
-                            "-", "0",
+                            "-",
                         ])
 
                     print(f"  ✓ {variant['variant_id']}")

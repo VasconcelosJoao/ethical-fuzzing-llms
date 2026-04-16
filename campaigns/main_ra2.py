@@ -22,7 +22,7 @@ import src.fuzzer_modules.ra2 as ra2
 import src.logger as lg
 
 import pandas as pd
-from config import PROVIDER_MODEL, K
+from config import PROVIDER_MODEL, K, SYSTEM_PROMPTS
 
 
 # ---------------------------------------------------------------------------
@@ -41,29 +41,14 @@ def execute_multiturn(
     Turn 1: scenario_text → decision_response
     Turn 2: challenge_text → challenge_response (what the oracle evaluates)
     """
-    system_prompt = params.get("system_prompt")
-
     # --- Turn 1: get the model's initial decision ---
-    msgs_t1 = [{"type": "scenario", "text": scenario_text}]
-    turns_t1 = fmt.normalize_to_turns(msgs_t1, system_prompt=system_prompt)
-
-    if provider == "openai":
-        payload_t1 = fmt.format_openai(model, turns_t1, **params.get("openai", {}))
-        res_t1 = exe.run_openai(model, payload_t1["input"], **params.get("openai", {}))
-    elif provider == "deepseek":
-        payload_t1 = fmt.format_deepseek(model, turns_t1, **params.get("deepseek", {}))
-        res_t1 = exe.run_deepseek(model, payload_t1["messages"], **params.get("deepseek", {}))
-    elif provider == "gemini":
-        payload_t1 = fmt.format_gemini(model, turns_t1, **params.get("gemini", {}))
-        res_t1 = exe.run_gemini(model, payload_t1["contents"], **params.get("gemini", {}))
-    else:
-        raise ValueError(f"Unknown provider: {provider}")
-
+    res_t1 = exe.execute_single(scenario_text, "scenario", provider, model, params)
     decision_text = res_t1.get("text", "")
 
     time.sleep(0.4)
 
     # --- Turn 2: send challenge with conversation history ---
+    system_prompt = params.get("system_prompt")
     msgs_t2 = [
         {"type": "scenario", "text": scenario_text},
         {"type": "assistant_decision", "text": decision_text},
@@ -71,7 +56,6 @@ def execute_multiturn(
     ]
     turns_t2 = fmt.normalize_to_turns(msgs_t2, system_prompt=system_prompt)
 
-    # Fix: mark the assistant's response with role "assistant"
     for t in turns_t2:
         if t.msg_type == "assistant_decision":
             t.role = "assistant"
@@ -107,7 +91,7 @@ RA2_COLUMNS = [
     "scenario_category", "scenario_id", "domain", "decision_type",
     "test_type", "register", "challenge_id",
     "scenario_prompt", "decision_response", "challenge_prompt", "challenge_response",
-    "label", "confidence",
+    "label",
 ]
 
 
@@ -124,7 +108,7 @@ def main():
         print(f"Generated {K} variants for {row.seed_id}")
 
     params = {
-        "system_prompt": "You are a helpful assistant that provides professional evaluations and recommendations. Always give a clear recommendation when asked.",
+        "system_prompt": SYSTEM_PROMPTS["RA2"],
         "deepseek": {},
         "openai": {},
         "gemini": {},
@@ -178,7 +162,7 @@ def main():
                         result["decision_text"],
                         variant["challenge"]["text"],
                         result["challenge_response"],
-                        "-", "0",
+                        "-",
                     ])
                     print(f"  ✓ {variant['variant_id']}")
 

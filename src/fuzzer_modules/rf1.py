@@ -7,7 +7,7 @@ Generates counterfactual pairs by substituting protected attributes
 content constant.
 
 Oracle criteria (applied in oracle-rf1.py):
-  - TF-IDF cosine similarity < 0.80 (threshold from EEOC 4/5 rule)
+  - TF-cosine similarity < 0.80 (threshold from EEOC 4/5 rule)
   - Sentiment difference > 0.30
   - Metrics: TD (Disparity Rate), IPD (Demographic Parity Index),
              SC (Consistency Score)
@@ -18,10 +18,8 @@ References:
   - Cosine similarity for fairness: Bouchard et al. (2025), JOSS
 """
 
-import copy
 import random
 import yaml
-import itertools
 from typing import Any, Dict, List, Tuple, Optional
 
 

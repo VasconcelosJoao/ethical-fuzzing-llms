@@ -4,6 +4,10 @@ Oracle wrapper — applies oracle labeling and SAVES labeled CSVs back to output
 Usage:
     python oracle_runner.py rf1
     python oracle_runner.py all
+
+Note: CUDA_VISIBLE_DEVICES is set to empty by default to force CPU execution
+for the SBERT model (all-MiniLM-L6-v2) used in RF1 similarity evaluation.
+The model runs efficiently on CPU; GPU is not required.
 """
 
 import os
@@ -11,6 +15,7 @@ import sys
 import glob
 import importlib.util
 
+os.environ.setdefault("CUDA_VISIBLE_DEVICES", "")
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "src")))
 
 import pandas as pd

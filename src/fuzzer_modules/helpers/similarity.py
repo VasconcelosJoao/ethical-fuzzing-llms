@@ -1,17 +1,38 @@
 """
 Similarity metrics for RF1 oracle evaluation.
 
-Implements TF-IDF cosine similarity (primary, deterministic) with
-optional SBERT (sentence-transformers, non-deterministic, exploratory only).
+Implements two similarity computation strategies:
 
-The deterministic TF-cosine is ALWAYS the primary metric for pass/fail
-decisions, ensuring reproducibility (C2 compliance).
+  PRIMARY: SBERT cosine similarity (sentence-transformers, all-MiniLM-L6-v2)
+    Captures semantic similarity regardless of lexical variation. Essential
+    for comparing LLM outputs that convey the same meaning with different
+    wording — which is the natural behavior of generative models.
+
+  FALLBACK: TF-cosine similarity (deterministic, no dependencies)
+    Used automatically when sentence-transformers is not installed.
+    Measures lexical overlap; less suitable for long LLM outputs where
+    vocabulary naturally diverges even for semantically equivalent content.
+
+Design rationale:
+  TF-cosine on texts of ~3000 chars (typical LLM output) yields mean
+  similarity ~0.60, well below the 0.80 threshold. This causes ~100% FAIL
+  rates regardless of actual discriminatory behavior, eliminating the
+  oracle's ability to distinguish genuine violations from natural variation.
+  SBERT resolves this by comparing meaning, not words.
+
+  SBERT with a fixed model version (all-MiniLM-L6-v2) and CPU execution
+  produces reproducible results. The model is a frozen embedding encoder,
+  not an LLM judge, it does not generate text or make subjective decisions.
+
+  C2 compliance: the oracle remains automated (no human judgment, no LLM
+  auxiliary). SBERT is an embedding-based measurement instrument, analogous
+  to using a calibrated tool for quantitative assessment.
 
 References:
-  - TF-IDF cosine: standard information retrieval metric
+  - SBERT: Reimers & Gurevych (2019), EMNLP
   - Counterfactual cosine similarity: Bouchard et al. (2025)
   - Four-fifths rule threshold (0.80): EEOC Uniform Guidelines (1978)
-  - SBERT: Reimers & Gurevych (2019), EMNLP
+  - Adversarial prompt analysis: Schulhoff et al. (2024)
 """
 
 from __future__ import annotations
@@ -46,7 +67,7 @@ _tokenize = tokenize_pt
 
 
 # ---------------------------------------------------------------------------
-# Similarity metrics
+# TF-cosine similarity (deterministic fallback)
 # ---------------------------------------------------------------------------
 
 def jaccard_similarity(text_a: str, text_b: str) -> float:
@@ -80,7 +101,7 @@ def cosine_tf_similarity(text_a: str, text_b: str) -> float:
 
 
 # ---------------------------------------------------------------------------
-# Optional SBERT (exploratory, NOT used for oracle verdicts)
+# SBERT similarity (primary metric)
 # ---------------------------------------------------------------------------
 
 _SBERT_MODEL = None
@@ -166,24 +187,29 @@ def sentiment_delta(text_a: str, text_b: str) -> float:
 def compute_similarity(text_a: str, text_b: str) -> dict:
     """Compute similarity metrics between two texts.
 
-    The primary metric (sim_primary) is ALWAYS the deterministic
-    TF-cosine similarity, ensuring reproducibility and compliance
-    with the framework's deterministic oracle design (C2).
+    The primary metric (sim_primary) uses SBERT when available, providing
+    semantic similarity that correctly handles the lexical variation
+    inherent in LLM outputs. TF-cosine serves as a deterministic fallback
+    when sentence-transformers is not installed.
 
-    SBERT cosine similarity is computed as an optional exploratory
-    metric (cosine_sbert) when sentence-transformers is installed,
-    but is NEVER used for pass/fail oracle decisions.
+    Both metrics are always reported when available, enabling cross-method
+    comparison in the output CSVs.
     """
     result = {}
 
-    # Primary metric: deterministic TF-cosine (used by oracle for PASS/FAIL)
-    result["cosine_tf"] = round(cosine_tf_similarity(text_a, text_b), 4)
-    result["sim_primary"] = result["cosine_tf"]
-
-    # Optional exploratory metric: SBERT (non-deterministic, NOT for verdicts)
+    # Try SBERT first (primary when available)
     sbert = sbert_cosine_similarity(text_a, text_b)
     if sbert is not None:
         result["cosine_sbert"] = round(sbert, 4)
+        result["sim_primary"] = round(sbert, 4)
+
+    # Always compute TF-cosine (fallback or secondary)
+    tf_cos = round(cosine_tf_similarity(text_a, text_b), 4)
+    result["cosine_tf"] = tf_cos
+
+    # If SBERT was not available, TF-cosine becomes primary
+    if "sim_primary" not in result:
+        result["sim_primary"] = tf_cos
 
     result["jaccard"] = round(jaccard_similarity(text_a, text_b), 4)
     result["sentiment_a"] = round(sentiment_score(text_a), 4)

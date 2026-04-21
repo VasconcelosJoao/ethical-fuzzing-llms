@@ -4,7 +4,4 @@ python-dotenv>=1.0.0
 pandas>=2.0.0
 numpy>=1.24.0
 pyyaml>=6.0
-
-# Optional: SBERT for exploratory similarity analysis (NOT used for oracle verdicts).
-# Install manually if needed: pip install sentence-transformers>=2.2.0
-# sentence-transformers>=2.2.0
+sentence-transformers>=2.2.0

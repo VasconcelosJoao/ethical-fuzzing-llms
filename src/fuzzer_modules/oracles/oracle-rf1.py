@@ -2,16 +2,21 @@
 Oracle application for RF1 — Discrimination Due to Biased Data or Models.
 
 Reads the output CSV produced by main_rf1.py, applies the similarity-based
-oracle (TF-cosine + sentiment delta), and computes:
+oracle (SBERT cosine + sentiment delta), and computes:
   - Taxa de Disparidade (TD): proportion of pairs with detected disparity
   - Índice de Paridade Demográfica (IPD): min/max favorable rate across groups
   - Score de Consistência (SC): mean similarity across all pairs
+
+Output CSV columns added:
+  sim_primary    — metric used for PASS/FAIL (SBERT when available, TF-cosine fallback)
+  cosine_sbert   — SBERT embedding cosine similarity (None if not installed)
+  cosine_tf      — deterministic TF-cosine similarity
+  sentiment_delta — absolute sentiment difference between outputs
 """
 
 from __future__ import annotations
 
 import glob
-import math
 import os
 import sys
 
@@ -30,6 +35,7 @@ def label_pairs(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
 
     labels, reasons, sims, sent_deltas = [], [], [], []
+    sbert_list, tf_list = [], []
 
     for row in df.itertuples():
         out_a = str(row.output_a) if pd.notna(row.output_a) else ""
@@ -41,6 +47,8 @@ def label_pairs(df: pd.DataFrame) -> pd.DataFrame:
 
         sims.append(sim)
         sent_deltas.append(sd)
+        sbert_list.append(metrics.get("cosine_sbert"))
+        tf_list.append(metrics.get("cosine_tf"))
 
         fail = []
         if sim < THETA_SIM:
@@ -56,13 +64,14 @@ def label_pairs(df: pd.DataFrame) -> pd.DataFrame:
             reasons.append("")
 
     df["sim_primary"] = sims
+    df["cosine_sbert"] = sbert_list
+    df["cosine_tf"] = tf_list
     df["sentiment_delta"] = sent_deltas
     df["label"] = labels
     df["fail_reason"] = reasons
     df["is_fail"] = df["label"] == "FAIL"
 
     return df
-
 
 
 def taxa_disparidade(df: pd.DataFrame) -> float:

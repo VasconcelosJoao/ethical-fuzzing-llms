@@ -49,7 +49,7 @@ Automated framework for detecting ethical violations in Large Language Models th
 
 4. Configure providers and models in `config.py`.
 
-> **Note:** All oracle evaluations use deterministic metrics (TF-cosine similarity, regex-based pattern matching, lexicon-based sentiment) and do not require GPU or external ML models. Optionally, `sentence-transformers` can be installed for exploratory SBERT similarity analysis, but this metric is never used for pass/fail oracle decisions.
+> **Note:** Oracle evaluation for RF1 uses SBERT (`all-MiniLM-L6-v2`) as the primary similarity metric to capture semantic equivalence between LLM outputs. The model runs efficiently on CPU. If your GPU is not compatible with the installed PyTorch version, add `CUDA_VISIBLE_DEVICES=""` to your `.env` file to force CPU execution. If `sentence-transformers` is not installed, the oracle falls back to deterministic TF-cosine similarity automatically.
 
 ## Usage
 
@@ -84,31 +84,13 @@ python oracle_runner.py all
 
 Results are saved to `outputs/` as CSV files with `label` (PASS/FAIL), metric scores, and `fail_reason` columns.
 
-### Optional: SBERT exploratory metric
+### Similarity metrics in RF1
 
-All oracle verdicts (PASS/FAIL) use deterministic TF-cosine similarity, ensuring reproducibility across environments. For exploratory analysis, an optional SBERT-based cosine similarity (`cosine_sbert`) can be added to the output CSVs. This metric is **never** used for pass/fail decisions — it is saved as an additional column for post-hoc comparison only.
+The RF1 oracle uses **SBERT cosine similarity** (sentence-transformers, `all-MiniLM-L6-v2`) as the primary metric for comparing counterfactual response pairs. SBERT captures semantic similarity, which is essential for LLM outputs that convey equivalent meaning with different wording — a natural characteristic of generative models.
 
-To enable it:
+When `sentence-transformers` is not installed, the oracle falls back to **TF-cosine similarity** (deterministic, no external dependencies). Both metrics are saved in the output CSV (`cosine_sbert` and `cosine_tf`) for cross-method comparison.
 
-1. Install `sentence-transformers`:
-
-   ```bash
-   pip install sentence-transformers>=2.2.0
-   ```
-
-2. Run the oracle normally:
-
-   ```bash
-   python oracle_runner.py rf1
-   ```
-
-   The `cosine_sbert` column will appear automatically in the output CSV alongside the deterministic metrics.
-
-> **GPU note:** The SBERT model (`all-MiniLM-L6-v2`) runs efficiently on CPU. If your GPU is not compatible with the installed PyTorch version, force CPU execution by adding `CUDA_VISIBLE_DEVICES=""` to your `.env` file or prefixing the command:
->
-> ```bash
-> CUDA_VISIBLE_DEVICES="" python oracle_runner.py rf1
-> ```
+The SBERT model is a frozen embedding encoder used as a measurement instrument — it does not generate text, make subjective judgments, or act as an LLM judge. With a fixed model version and CPU execution, results are reproducible.
 
 ## Dashboard (GUI)
 
@@ -168,8 +150,8 @@ ethical-fuzzing-llms/
 │       ├── ra2.py                     # Accountability fuzzer
 │       ├── rt1.py, rt2.py             # Transparency fuzzers
 │       ├── helpers/                   # Oracle helper functions
-│       │   ├── similarity.py          # RF1: TF-cosine, sentiment
-│       │   ├── quality.py             # RF2: length, options, resources
+│       │   ├── similarity.py          # RF1: SBERT cosine (primary), TF-cosine (fallback), sentiment
+│       │   ├── quality.py             # RF2: length, options, resources, encouragement
 │       │   ├── subgroup_fairness.py   # RF4: element matching, 4/5 rule
 │       │   ├── contestability.py      # RA2: recognition, resistance
 │       │   ├── transparency.py        # RT1: factor extraction, accessibility

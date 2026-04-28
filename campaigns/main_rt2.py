@@ -32,7 +32,6 @@ RT2_COLUMNS = [
     "perturbation_b_id", "perturbation_b_label",
     "prompt_a", "output_a",
     "prompt_b", "output_b",
-    "label",
 ]
 
 
@@ -54,7 +53,7 @@ def main():
     for provider, model in PROVIDER_MODEL.items():
         out_rows = []
         logger = lg.new_run_logger(
-            out_dir="logs",
+            out_dir=os.path.join("execution_logs", "rt2"),
             prefix=f"rt2_{provider}_{model}",
             meta={"provider": provider, "model": model, "k": K, "risk": "RT2"},
         )
@@ -94,7 +93,6 @@ def main():
                         variant["meta"]["perturbation_b_label"],
                         variant["prompt_a"], res_a.get("text", ""),
                         variant["prompt_b"], res_b.get("text", ""),
-                        "-",
                     ])
                     print(f"  ✓ {variant['variant_id']}")
 
@@ -111,8 +109,9 @@ def main():
             print(f"Finished seed {row.seed_id}")
 
         out_df = pd.DataFrame(out_rows, columns=RT2_COLUMNS)
-        os.makedirs("outputs", exist_ok=True)
-        out_path = f"outputs/rt2_{provider}_{model}.csv"
+        out_dir = os.path.join("campaign_outputs", "rt2")
+        os.makedirs(out_dir, exist_ok=True)
+        out_path = os.path.join(out_dir, f"rt2_{provider}_{model}.csv")
         out_df.to_csv(out_path, index=False)
         print(f"Saved → {out_path}")
 

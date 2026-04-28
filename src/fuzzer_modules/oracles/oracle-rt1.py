@@ -220,11 +220,11 @@ def summarize_explanation(df: pd.DataFrame) -> dict:
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    meta_files = sorted(glob.glob("outputs/rt1_meta_*.csv"))
-    expl_files = sorted(glob.glob("outputs/rt1_expl_*.csv"))
+    meta_files = sorted(glob.glob("campaign_outputs/rt1_meta_*.csv"))
+    expl_files = sorted(glob.glob("campaign_outputs/rt1_expl_*.csv"))
 
     if not meta_files and not expl_files:
-        print("No RT1 output files found in outputs/")
+        print("No RT1 output files found in campaign_outputs/")
         sys.exit(1)
 
     # Extract provider names from filenames
@@ -236,8 +236,8 @@ if __name__ == "__main__":
         providers_seen.add(name)
 
     for name in sorted(providers_seen):
-        meta_path = f"outputs/rt1_meta_{name}.csv"
-        expl_path = f"outputs/rt1_expl_{name}.csv"
+        meta_path = f"campaign_outputs/rt1_meta_{name}.csv"
+        expl_path = f"campaign_outputs/rt1_expl_{name}.csv"
 
         print("\n" + "=" * 60)
         print(f"MODEL: {name}")

@@ -49,7 +49,7 @@ Automated framework for detecting ethical violations in Large Language Models th
 
 4. Configure providers and models in `config.py`.
 
-> **Note:** Oracle evaluation for RF1 uses SBERT (`all-MiniLM-L6-v2`) as the primary similarity metric to capture semantic equivalence between LLM outputs. The model runs efficiently on CPU. If your GPU is not compatible with the installed PyTorch version, add `CUDA_VISIBLE_DEVICES=""` to your `.env` file to force CPU execution. If `sentence-transformers` is not installed, the oracle falls back to deterministic TF-cosine similarity automatically.
+> **Note:** Oracle evaluation for RF1 and RT2 can use SBERT (`all-MiniLM-L6-v2`) as the primary similarity metric to capture semantic equivalence between LLM outputs. The model runs efficiently on CPU. If your GPU is not compatible with the installed PyTorch version, add `CUDA_VISIBLE_DEVICES=""` to your `.env` file to force CPU execution. If `sentence-transformers` is not installed, the oracle falls back to deterministic TF-cosine similarity automatically.
 
 ## Usage
 
@@ -68,7 +68,9 @@ To reduce the number of API calls for testing purposes, change `K` in `config.py
 
 ### Applying oracles
 
-Use `oracle_runner.py` to evaluate campaign results. This script applies the oracle labeling **and saves the labeled results back to the CSV files** in `outputs/`:
+Use `oracle_runner.py` to evaluate campaign results. The runner reads source CSVs from `outputs/`, applies oracle labeling in memory, and writes **derived immutable artifacts** to `oracle_results/<risk>/`.
+
+Source files in `outputs/` are never overwritten.
 
 ```bash
 python oracle_runner.py rf1
@@ -82,13 +84,13 @@ python oracle_runner.py rt2
 python oracle_runner.py all
 ```
 
-Results are saved to `outputs/` as CSV files with `label` (PASS/FAIL), metric scores, and `fail_reason` columns.
+Results are saved as files named `risk_provider_model_oracle_results.csv` (and `rt1_meta|expl_provider_model_oracle_results.csv` for RT1).
 
-### Similarity metrics in RF1
+### Similarity metrics in RF1 and RT2
 
-The RF1 oracle uses **SBERT cosine similarity** (sentence-transformers, `all-MiniLM-L6-v2`) as the primary metric for comparing counterfactual response pairs. SBERT captures semantic similarity, which is essential for LLM outputs that convey equivalent meaning with different wording — a natural characteristic of generative models.
+The RF1 and RT2 oracles can use **SBERT cosine similarity** (sentence-transformers, `all-MiniLM-L6-v2`) as the primary metric for comparing response pairs. SBERT captures semantic similarity, which is essential for LLM outputs that convey equivalent meaning with different wording — a natural characteristic of generative models.
 
-When `sentence-transformers` is not installed, the oracle falls back to **TF-cosine similarity** (deterministic, no external dependencies). Both metrics are saved in the output CSV (`cosine_sbert` and `cosine_tf`) for cross-method comparison.
+When `sentence-transformers` is not installed, the oracle falls back to **TF-cosine similarity** (deterministic, no external dependencies). Both metrics are saved in derived CSVs (`cosine_sbert` and `cosine_tf`) for cross-method comparison.
 
 The SBERT model is a frozen embedding encoder used as a measurement instrument — it does not generate text, make subjective judgments, or act as an LLM judge. With a fixed model version and CPU execution, results are reproducible.
 
@@ -105,7 +107,7 @@ The dashboard provides four views:
 
 - **Overview** — module descriptions, metrics, and API call distribution
 - **Run Campaign** — select modules, verify API keys, execute campaigns and oracles
-- **Results Explorer** — pass/fail rates by provider, metric distributions, failure analysis, and seed-level breakdown
+- **Results Explorer** — reads `oracle_results` only (derived verdicts), with pass/fail rates by provider, metric distributions, failure analysis, and seed-level breakdown; the compact table hides verbose text fields
 - **Configuration** — current provider models, K value, API key status, and module reference table
 
 ## Repository Structure
@@ -116,7 +118,7 @@ ethical-fuzzing-llms/
 ├── requirements.txt                   # Python dependencies
 ├── .env.example                       # API key template
 ├── app.py                             # Streamlit dashboard (GUI)
-├── oracle_runner.py                   # Oracle wrapper (labels + saves CSVs)
+├── oracle_runner.py                   # Immutable oracle wrapper (derived artifacts)
 ├── campaigns/                         # Campaign execution scripts
 │   ├── main_rf1.py
 │   ├── main_rf2.py
@@ -163,8 +165,9 @@ ethical-fuzzing-llms/
 │           ├── oracle-ra2.py
 │           ├── oracle-rt1.py
 │           └── oracle-rt2.py
-├── outputs/                           # Campaign results (CSV)
-└── logs/                              # Execution logs (JSONL)
+├── campaign_outputs/                  # Campaign source results (CSV, immutable)
+├── oracle_results/                    # Oracle-derived labeled results (CSV)
+└── execution_logs/                    # Execution logs (JSONL, organized by risk)
 ```
 
 ## Threshold Justifications

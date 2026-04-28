@@ -1,7 +1,6 @@
 # Project-specific
 .env
-outputs/
-logs/
+oracle_results/
 
 # Python
 __pycache__/

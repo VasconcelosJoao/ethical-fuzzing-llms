@@ -79,14 +79,12 @@ META_COLUMNS = [
     "provider", "model", "seed_id", "variant_id", "test_mode",
     "pair_category", "pair_id", "domain",
     "scenario_a", "output_a", "scenario_b", "output_b",
-    "label",
 ]
 
 EXPL_COLUMNS = [
     "provider", "model", "seed_id", "variant_id", "test_mode",
     "pair_category", "pair_id", "domain", "explanation_level",
     "scenario", "decision_response", "explanation_request", "explanation_response",
-    "label",
 ]
 
 
@@ -113,7 +111,7 @@ def main():
         meta_rows = []
         expl_rows = []
         logger = lg.new_run_logger(
-            out_dir="logs",
+            out_dir=os.path.join("execution_logs", "rt1"),
             prefix=f"rt1_{provider}_{model}",
             meta={"provider": provider, "model": model, "k": K, "risk": "RT1"},
         )
@@ -157,7 +155,6 @@ def main():
                             res_a.get("text", ""),
                             variant["scenario_b"],
                             res_b.get("text", ""),
-                            "-",
                         ])
 
                     elif variant["test_mode"] == "explanation":
@@ -186,7 +183,6 @@ def main():
                             result["decision_text"],
                             variant["explanation_request"],
                             result["explanation_text"],
-                            "-",
                         ])
 
                     print(f"  ✓ {variant['variant_id']}")
@@ -204,15 +200,16 @@ def main():
             print(f"Finished seed {row.seed_id}")
 
         # Persist CSVs
-        os.makedirs("outputs", exist_ok=True)
+        out_dir = os.path.join("campaign_outputs", "rt1")
+        os.makedirs(out_dir, exist_ok=True)
 
         if meta_rows:
             pd.DataFrame(meta_rows, columns=META_COLUMNS).to_csv(
-                f"outputs/rt1_meta_{provider}_{model}.csv", index=False
+                os.path.join(out_dir, f"rt1_meta_{provider}_{model}.csv"), index=False
             )
         if expl_rows:
             pd.DataFrame(expl_rows, columns=EXPL_COLUMNS).to_csv(
-                f"outputs/rt1_expl_{provider}_{model}.csv", index=False
+                os.path.join(out_dir, f"rt1_expl_{provider}_{model}.csv"), index=False
             )
         print(f"Saved outputs for {provider}/{model}")
 

@@ -13,7 +13,6 @@ import re as _re
 import sys
 import glob
 import subprocess
-import time
 from pathlib import Path
 
 import streamlit as st
@@ -103,7 +102,7 @@ MODULES = {
         "calls_per_variant": 2,  # pair
         "campaign": "campaigns/main_rf1.py",
         "oracle_script": "src/fuzzer_modules/oracles/oracle-rf1.py",
-        "output_pattern": "outputs/rf1_*.csv",
+        "output_patterns": ["campaign_outputs/rf1/*.csv", "campaign_outputs/rf1_*.csv"],
     },
     "RF2": {
         "name": "Unequal Access to Benefits",
@@ -115,7 +114,7 @@ MODULES = {
         "calls_per_variant": 2,  # pair
         "campaign": "campaigns/main_rf2.py",
         "oracle_script": "src/fuzzer_modules/oracles/oracle-rf2.py",
-        "output_pattern": "outputs/rf2_*.csv",
+        "output_patterns": ["campaign_outputs/rf2/*.csv", "campaign_outputs/rf2_*.csv"],
     },
     "RF4": {
         "name": "Subgroup Fairness",
@@ -127,7 +126,7 @@ MODULES = {
         "calls_per_variant": 4,  # 3-5 subgroups (avg)
         "campaign": "campaigns/main_rf4.py",
         "oracle_script": "src/fuzzer_modules/oracles/oracle-rf4.py",
-        "output_pattern": "outputs/rf4_*.csv",
+        "output_patterns": ["campaign_outputs/rf4/*.csv", "campaign_outputs/rf4_*.csv"],
     },
     "RA2": {
         "name": "Contestability",
@@ -139,7 +138,7 @@ MODULES = {
         "calls_per_variant": 2,  # multi-turn
         "campaign": "campaigns/main_ra2.py",
         "oracle_script": "src/fuzzer_modules/oracles/oracle-ra2.py",
-        "output_pattern": "outputs/ra2_*.csv",
+        "output_patterns": ["campaign_outputs/ra2/*.csv", "campaign_outputs/ra2_*.csv"],
     },
     "RT1": {
         "name": "Decision Opacity",
@@ -151,7 +150,7 @@ MODULES = {
         "calls_per_variant": 2,  # meta/expl
         "campaign": "campaigns/main_rt1.py",
         "oracle_script": "src/fuzzer_modules/oracles/oracle-rt1.py",
-        "output_pattern": "outputs/rt1_*.csv",
+        "output_patterns": ["campaign_outputs/rt1/*.csv", "campaign_outputs/rt1_meta_*.csv", "campaign_outputs/rt1_expl_*.csv"],
     },
     "RT2": {
         "name": "Hidden Biases",
@@ -163,20 +162,8 @@ MODULES = {
         "calls_per_variant": 2,  # pair
         "campaign": "campaigns/main_rt2.py",
         "oracle_script": "src/fuzzer_modules/oracles/oracle-rt2.py",
-        "output_pattern": "outputs/rt2_*.csv",
+        "output_patterns": ["campaign_outputs/rt2/*.csv", "campaign_outputs/rt2_*.csv"],
     },
-}
-
-PRINCIPLE_COLORS = {
-    "Fairness": "#7ec8e3",
-    "Accountability": "#f4a261",
-    "Transparency": "#8ecae6",
-}
-
-PROVIDER_LABELS = {
-    "deepseek": "DeepSeek",
-    "openai": "OpenAI (GPT)",
-    "gemini": "Google Gemini",
 }
 
 
@@ -184,23 +171,80 @@ PROVIDER_LABELS = {
 # Helper functions
 # ---------------------------------------------------------------------------
 
-def find_output_csvs(pattern: str) -> list[str]:
-    """Find output CSV files matching a glob pattern."""
-    return sorted(glob.glob(pattern))
+def find_output_csvs(patterns: str | list[str]) -> list[str]:
+    """Find output CSV files matching one or more glob patterns."""
+    if isinstance(patterns, str):
+        patterns = [patterns]
+
+    paths: set[str] = set()
+    for pattern in patterns:
+        paths.update(glob.glob(pattern, recursive=True))
+    return sorted(paths)
 
 
 def load_and_tag(path: str) -> pd.DataFrame:
     """Load a CSV and extract provider/model from filename."""
     df = pd.read_csv(path)
     basename = Path(path).stem  # e.g. rf1_openai_gpt-5.2
-    parts = basename.split("_", 1)
-    if len(parts) > 1:
-        provider_model = parts[1]
+
+    if {"provider", "model"}.issubset(df.columns):
+        provider = str(df["provider"].iloc[0]) if len(df) else "unknown"
+        model = str(df["model"].iloc[0]) if len(df) else "unknown"
+        provider_model = f"{provider}_{model}"
     else:
-        provider_model = basename
+        parts = basename.split("_", 1)
+        if len(parts) > 1:
+            provider_model = parts[1]
+        else:
+            provider_model = basename
+
     df["_source_file"] = basename
     df["_provider_model"] = provider_model
     return df
+
+
+def is_large_text_column(series: pd.Series, column_name: str) -> bool:
+    """Heuristically detect columns that are too verbose for the summary table."""
+    if column_name in {
+        "prompt",
+        "output",
+        "decision_response",
+        "challenge_prompt",
+        "challenge_response",
+        "scenario_prompt",
+        "scenario_response",
+        "explanation",
+    }:
+        return True
+
+    if not pd.api.types.is_object_dtype(series):
+        return False
+
+    sample = series.dropna().astype(str).head(20)
+    if sample.empty:
+        return False
+
+    avg_len = sample.map(len).mean()
+    max_len = sample.map(len).max()
+    return avg_len > 120 or max_len > 300
+
+
+def get_summary_display_columns(df: pd.DataFrame) -> list[str]:
+    """Return a compact set of columns for the Results Explorer table."""
+    excluded = {
+        "_source_file",
+        "_provider_model",
+        "oracle_thresholds",
+        "oracle_name",
+    }
+    columns: list[str] = []
+    for column in df.columns:
+        if column.startswith("_") or column in excluded:
+            continue
+        if is_large_text_column(df[column], column):
+            continue
+        columns.append(column)
+    return columns
 
 
 def get_config_values() -> dict:
@@ -218,7 +262,7 @@ def get_config_values() -> dict:
             "providers": {
                 "deepseek": "deepseek-chat",
                 "openai": "gpt-5.2",
-                "gemini": "gemini-3-flash-preview",
+                "gemini": "gemini-3-flash",
             },
             "k": 20,
         }
@@ -378,7 +422,7 @@ elif page == "🚀 Run Campaign":
     st.subheader("Providers")
 
     all_providers = {
-        "gemini": config["providers"].get("gemini", "gemini-3-flash-preview"),
+        "gemini": config["providers"].get("gemini", "gemini-3-flash"),
         "openai": config["providers"].get("openai", "gpt-5.2"),
         "deepseek": config["providers"].get("deepseek", "deepseek-chat"),
     }
@@ -440,7 +484,6 @@ elif page == "🚀 Run Campaign":
                 )
 
                 done_count = 0
-                last_line = ""
                 for line in process.stdout:
                     line = line.rstrip()
                     if line.startswith("  ✓") or line.startswith("  ✗"):
@@ -448,7 +491,6 @@ elif page == "🚀 Run Campaign":
                         pct = min(done_count / max(total_variants, 1), 1.0)
                         progress_bar.progress(pct, text=f"{mod_id}: {done_count}/{total_variants} variants")
                     if line:
-                        last_line = line
                         log_area.caption(line[-120:])
 
                 process.wait()
@@ -462,19 +504,28 @@ elif page == "🚀 Run Campaign":
 
     with col_oracle:
         st.subheader("2️⃣ Apply Oracles")
+        # Conflict policy selection for derived files
+        conflict_choice = st.radio(
+            "On conflict",
+            options=["cancel", "overwrite"],
+            index=0,
+            horizontal=True,
+            help="If a derived file already exists: cancel the operation (default) or overwrite the file.",
+        )
+
         if st.button("🔍 Run Oracles", type="secondary", disabled=not selected_modules):
             for mod_id in selected_modules:
                 mod = MODULES[mod_id]
-                csvs = find_output_csvs(mod["output_pattern"])
+                csvs = find_output_csvs(mod["output_patterns"])
                 if not csvs:
-                    st.warning(f"⚠️ No output CSVs found for {mod_id}. Run the campaign first.")
+                    st.warning(f"⚠️ No campaign CSVs found for {mod_id}. Run the campaign first.")
                     continue
                 status = st.empty()
                 status.info(f"⏳ Evaluating {mod_id}...")
                 env = os.environ.copy()
                 env.setdefault("CUDA_VISIBLE_DEVICES", "")
                 process = subprocess.Popen(
-                    [sys.executable, "-u", "oracle_runner.py", mod_id.lower()],
+                    [sys.executable, "-u", "oracle_runner.py", mod_id.lower(), "--on-conflict", conflict_choice],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.STDOUT,
                     text=True,
@@ -503,33 +554,36 @@ elif page == "🚀 Run Campaign":
 elif page == "📊 Results Explorer":
     st.title("📊 Results Explorer")
 
-    # Find all output CSVs
-    all_csvs = sorted(glob.glob("outputs/*.csv"))
+    # Find derived oracle results (only derived are shown in the UI)
+    all_derived_csvs = sorted(glob.glob("oracle_results/*/*.csv"))
 
-    if not all_csvs:
+    if not all_derived_csvs:
         st.info(
-            "No result files found in `outputs/`. "
-            "Run a campaign first, or ensure CSVs are in the outputs directory."
+            "No derived oracle result files found in `oracle_results/`. "
+            "Run campaigns and apply oracles first to generate derived verdicts."
         )
     else:
-        # Group by module
-        csv_by_module = {}
-        for path in all_csvs:
-            name = Path(path).stem
-            prefix = name.split("_")[0].upper()
-            csv_by_module.setdefault(prefix, []).append(path)
+        # Group derived data by risk folder
+        derived_by_module = {}
+        for path in all_derived_csvs:
+            module = Path(path).parent.name.upper()
+            derived_by_module.setdefault(module, []).append(path)
+
+        available_modules = sorted(derived_by_module.keys())
 
         selected_module = st.selectbox(
             "Select module",
-            options=sorted(csv_by_module.keys()),
+            options=available_modules,
             format_func=lambda x: f"{x} — {MODULES.get(x, {}).get('name', 'Unknown')}",
         )
 
-        csvs = csv_by_module.get(selected_module, [])
+        module_derived = derived_by_module.get(selected_module, [])
+
+        st.caption("Using derived oracle verdicts from oracle_results.")
 
         # Load all provider results for this module
         dfs = []
-        for path in csvs:
+        for path in module_derived:
             try:
                 df = load_and_tag(path)
                 dfs.append(df)
@@ -541,15 +595,12 @@ elif page == "📊 Results Explorer":
         else:
             combined = pd.concat(dfs, ignore_index=True)
 
-            # Check if oracle has been applied (label column has PASS/FAIL, not just "-")
-            has_labels = (
-                "label" in combined.columns
-                and combined["label"].isin(["PASS", "FAIL"]).any()
-            )
-            if not has_labels and "is_fail" not in combined.columns and "label" in combined.columns:
-                combined["is_fail"] = False  # placeholder
+            if "is_fail" not in combined.columns and "label" in combined.columns:
+                combined["is_fail"] = combined["label"].fillna("").astype(str).str.upper().eq("FAIL")
 
-            if has_labels:
+            has_oracle_verdict = "is_fail" in combined.columns
+
+            if has_oracle_verdict:
                 st.subheader("Summary")
 
                 # Per-provider metrics
@@ -571,8 +622,9 @@ elif page == "📊 Results Explorer":
 
                 # Pass/Fail distribution chart
                 st.subheader("Pass/Fail Distribution by Provider")
+                combined["_status"] = combined["is_fail"].map({True: "FAIL", False: "PASS"})
                 pivot_pf = (
-                    combined.groupby(["_provider_model", "label"])
+                    combined.groupby(["_provider_model", "_status"])
                     .size()
                     .unstack(fill_value=0)
                 )
@@ -619,13 +671,13 @@ elif page == "📊 Results Explorer":
                 # Failure analysis
                 st.subheader("Failure Analysis")
                 if "fail_reason" in combined.columns:
-                    failures = combined[combined["label"] == "FAIL"]
+                    failures = combined[combined["is_fail"]]
                     if len(failures) > 0:
+                        reason_tokens = failures["fail_reason"].fillna("").astype(str).str.split("; ").explode().str.strip()
+                        reason_tokens = reason_tokens[reason_tokens != ""]
                         reasons = (
-                            failures["fail_reason"]
-                            .str.split("; ")
-                            .explode()
-                            .str.extract(r"^(\w+)=")[0]
+                            reason_tokens
+                            .str.replace(r"=.*", "", regex=True)
                             .value_counts()
                             .head(10)
                         )
@@ -648,14 +700,14 @@ elif page == "📊 Results Explorer":
 
             else:
                 st.warning(
-                    "Oracle not yet applied — showing raw campaign outputs. "
-                    "Go to **Run Campaign → Apply Oracles** to generate labels."
+                    "No oracle verdict columns found for this selection. "
+                    "Use derived files in oracle_results or apply oracles first."
                 )
 
             # Raw data
-            st.subheader("Raw Data")
-            with st.expander("View data table"):
-                display_cols = [c for c in combined.columns if not c.startswith("_")]
+            st.subheader("Result Table")
+            with st.expander("View compact data table"):
+                display_cols = get_summary_display_columns(combined)
                 st.dataframe(combined[display_cols], width='stretch')
 
             # Download

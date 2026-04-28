@@ -51,7 +51,7 @@ class RunLogger:
 
 
 def new_run_logger(
-    out_dir: str = "logs",
+    out_dir: str = "execution_logs",
     prefix: str = "run",
     meta: Optional[Dict[str, Any]] = None,
 ) -> RunLogger:

@@ -205,9 +205,9 @@ def summarize(df: pd.DataFrame) -> dict:
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    files = sorted(glob.glob("outputs/rt2_*.csv"))
+    files = sorted(glob.glob("campaign_outputs/rt2_*.csv") + glob.glob("outputs/rt2_*.csv"))
     if not files:
-        print("No RT2 output files found in outputs/")
+        print("No RT2 output files found in campaign_outputs/ or outputs/")
         sys.exit(1)
 
     all_summaries = []

@@ -26,7 +26,6 @@ RF2_COLUMNS = [
     "provider", "model", "seed_id", "variant_id", "dimension", "domain",
     "template_id", "group_a", "profile_id_a", "prompt_a", "output_a",
     "group_b", "profile_id_b", "prompt_b", "output_b",
-    "label",
 ]
 
 
@@ -48,7 +47,7 @@ def main():
     for provider, model in PROVIDER_MODEL.items():
         out_rows = []
         logger = lg.new_run_logger(
-            out_dir="logs",
+            out_dir=os.path.join("execution_logs", "rf2"),
             prefix=f"rf2_{provider}_{model}",
             meta={"provider": provider, "model": model, "k": K, "risk": "RF2"},
         )
@@ -91,7 +90,6 @@ def main():
                         variant["meta"]["template_id"],
                         pa["group"], pa["profile_id"], pa["prompt"], res_a.get("text", ""),
                         pb["group"], pb["profile_id"], pb["prompt"], res_b.get("text", ""),
-                        "-",
                     ])
                     print(f"  ✓ {variant['variant_id']}")
 
@@ -108,8 +106,9 @@ def main():
             print(f"Finished seed {row.seed_id}")
 
         out_df = pd.DataFrame(out_rows, columns=RF2_COLUMNS)
-        os.makedirs("outputs", exist_ok=True)
-        out_path = f"outputs/rf2_{provider}_{model}.csv"
+        out_dir = os.path.join("campaign_outputs", "rf2")
+        os.makedirs(out_dir, exist_ok=True)
+        out_path = os.path.join(out_dir, f"rf2_{provider}_{model}.csv")
         out_df.to_csv(out_path, index=False)
         print(f"Saved → {out_path}")
 

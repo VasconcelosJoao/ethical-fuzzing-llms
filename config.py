@@ -7,7 +7,7 @@ Update K to change the number of variants per seed.
 
 PROVIDER_MODEL = {
     "deepseek": "deepseek-chat",
-    "gemini": "gemini-3-flash-preview",
+    "gemini": "gemini-3-flash",
     "openai": "gpt-5.2",
 }
 

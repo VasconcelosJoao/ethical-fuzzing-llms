@@ -27,7 +27,6 @@ RF4_COLUMNS = [
     "dimension", "benchmark_id", "domain", "benchmark_task",
     "group", "profile_id", "prompt", "output",
     "expected_elements", "min_elements",
-    "label",
 ]
 
 
@@ -49,7 +48,7 @@ def main():
     for provider, model in PROVIDER_MODEL.items():
         out_rows = []
         logger = lg.new_run_logger(
-            out_dir="logs",
+            out_dir=os.path.join("execution_logs", "rf4"),
             prefix=f"rf4_{provider}_{model}",
             meta={"provider": provider, "model": model, "k": K, "risk": "RF4"},
         )
@@ -91,7 +90,6 @@ def main():
                             result.get("text", ""),
                             "|".join(variant["benchmark"]["expected_elements"]),
                             variant["benchmark"]["min_elements"],
-                            "-",
                         ])
                         print(f"  ✓ {variant['variant_id']}:{prompt_info['group']}")
 
@@ -108,8 +106,9 @@ def main():
             print(f"Finished seed {row.seed_id}")
 
         out_df = pd.DataFrame(out_rows, columns=RF4_COLUMNS)
-        os.makedirs("outputs", exist_ok=True)
-        out_path = f"outputs/rf4_{provider}_{model}.csv"
+        out_dir = os.path.join("campaign_outputs", "rf4")
+        os.makedirs(out_dir, exist_ok=True)
+        out_path = os.path.join(out_dir, f"rf4_{provider}_{model}.csv")
         out_df.to_csv(out_path, index=False)
         print(f"Saved → {out_path}")
 

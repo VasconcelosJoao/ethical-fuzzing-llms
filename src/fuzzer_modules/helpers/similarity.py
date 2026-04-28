@@ -6,7 +6,7 @@ Implements two similarity computation strategies:
   PRIMARY: SBERT cosine similarity (sentence-transformers, all-MiniLM-L6-v2)
     Captures semantic similarity regardless of lexical variation. Essential
     for comparing LLM outputs that convey the same meaning with different
-    wording — which is the natural behavior of generative models.
+    wording - which is the natural behavior of generative models.
 
   FALLBACK: TF-cosine similarity (deterministic, no dependencies)
     Used automatically when sentence-transformers is not installed.
@@ -129,7 +129,7 @@ def sbert_cosine_similarity(text_a: str, text_b: str) -> float | None:
 
 
 # ---------------------------------------------------------------------------
-# Sentiment lexicon — CONTEXT: DISCRIMINATION DETECTION (RF1)
+# Sentiment lexicon - CONTEXT: DISCRIMINATION DETECTION (RF1)
 #
 # In RF1, we compare how the model describes two candidates who differ
 # only in a protected attribute (gender, ethnicity, age). The lexicon

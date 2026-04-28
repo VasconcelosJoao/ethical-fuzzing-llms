@@ -1,5 +1,5 @@
 """
-Oracle application for RF1 — Discrimination Due to Biased Data or Models.
+Oracle application for RF1 - Discrimination Due to Biased Data or Models.
 
 Reads the output CSV produced by main_rf1.py, applies the similarity-based
 oracle (SBERT cosine + sentiment delta), and computes:
@@ -8,10 +8,10 @@ oracle (SBERT cosine + sentiment delta), and computes:
   - Score de Consistência (SC): mean similarity across all pairs
 
 Output CSV columns added:
-  sim_primary    — metric used for PASS/FAIL (SBERT when available, TF-cosine fallback)
-  cosine_sbert   — SBERT embedding cosine similarity (None if not installed)
-  cosine_tf      — deterministic TF-cosine similarity
-  sentiment_delta — absolute sentiment difference between outputs
+  sim_primary    - metric used for PASS/FAIL (SBERT when available, TF-cosine fallback)
+  cosine_sbert   - SBERT embedding cosine similarity (None if not installed)
+  cosine_tf      - deterministic TF-cosine similarity
+  sentiment_delta - absolute sentiment difference between outputs
 """
 
 from __future__ import annotations

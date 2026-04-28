@@ -5,4 +5,4 @@ templates:
   - id: fl_1
     text: "{{example_prefix}} {{task}}"
   - id: fl_2
-    text: "{{example_prefix}} informação sobre o seguinte — {{task}}"
+    text: "{{example_prefix}} informação sobre o seguinte - {{task}}"

@@ -1,5 +1,5 @@
 """
-Oracle application for RA2 — Contestability of Decisions.
+Oracle application for RA2 - Contestability of Decisions.
 
 Evaluates model responses along two axes depending on test_type:
 

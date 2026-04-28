@@ -1,5 +1,5 @@
 """
-Ethical Fuzzing Framework — GUI Dashboard
+Ethical Fuzzing Framework - GUI Dashboard
 ==========================================
 Streamlit interface for running ethical fuzzing campaigns against LLMs
 and visualizing oracle results.
@@ -247,6 +247,15 @@ def get_summary_display_columns(df: pd.DataFrame) -> list[str]:
     return columns
 
 
+def make_arrow_safe_display_df(df: pd.DataFrame) -> pd.DataFrame:
+    """Convert object columns to plain strings so Streamlit can render them safely."""
+    safe_df = df.copy()
+    for column in safe_df.columns:
+        if pd.api.types.is_object_dtype(safe_df[column]):
+            safe_df[column] = safe_df[column].map(lambda value: "" if pd.isna(value) else str(value))
+    return safe_df
+
+
 def get_config_values() -> dict:
     """Try to read config.py values."""
     try:
@@ -296,7 +305,7 @@ def update_config_file(provider_dict: dict, k_value: int):
             cfg_text,
         )
     else:
-        # File missing or unexpected format — full write
+        # File missing or unexpected format - full write
         cfg_text = (
             '"""\n'
             "Centralized configuration for ethical fuzzing campaigns.\n\n"
@@ -326,7 +335,7 @@ with st.sidebar:
     )
 
     st.divider()
-    st.caption("UnB/PPGI — Dissertação de Mestrado")
+    st.caption("UnB/PPGI - Dissertação de Mestrado")
     st.caption("João Lucas Pinto Vasconcelos")
 
 
@@ -414,7 +423,7 @@ elif page == "🚀 Run Campaign":
         "Choose modules to run",
         options=list(MODULES.keys()),
         default=list(MODULES.keys()),
-        format_func=lambda x: f"{x} — {MODULES[x]['name']}",
+        format_func=lambda x: f"{x} - {MODULES[x]['name']}",
     )
 
     # Provider selection
@@ -430,7 +439,7 @@ elif page == "🚀 Run Campaign":
         "Select providers to run",
         options=list(all_providers.keys()),
         default=[p for p in all_providers if p in config["providers"]],
-        format_func=lambda x: f"{x} — {all_providers[x]}",
+        format_func=lambda x: f"{x} - {all_providers[x]}",
     )
 
     col1, col2 = st.columns([1, 3])
@@ -574,7 +583,7 @@ elif page == "📊 Results Explorer":
         selected_module = st.selectbox(
             "Select module",
             options=available_modules,
-            format_func=lambda x: f"{x} — {MODULES.get(x, {}).get('name', 'Unknown')}",
+            format_func=lambda x: f"{x} - {MODULES.get(x, {}).get('name', 'Unknown')}",
         )
 
         module_derived = derived_by_module.get(selected_module, [])
@@ -708,7 +717,8 @@ elif page == "📊 Results Explorer":
             st.subheader("Result Table")
             with st.expander("View compact data table"):
                 display_cols = get_summary_display_columns(combined)
-                st.dataframe(combined[display_cols], width='stretch')
+                display_df = make_arrow_safe_display_df(combined[display_cols])
+                st.dataframe(display_df, width='stretch')
 
             # Download
             csv_data = combined.to_csv(index=False)
@@ -741,7 +751,7 @@ elif page == "⚙️ Configuration":
         if ok:
             st.success(f"✅ {name}")
         else:
-            st.error(f"❌ {name} — add to `.env`")
+            st.error(f"❌ {name} - add to `.env`")
 
     st.divider()
 

@@ -1,5 +1,5 @@
 """
-RF2 Fuzzer Module — Generation-based + Differential Fuzzing
+RF2 Fuzzer Module - Generation-based + Differential Fuzzing
 for Unequal Access Detection.
 
 Generates prompt pairs parameterized by socioeconomic profiles
@@ -139,8 +139,8 @@ def fuzz_rf2(
     k : int
         Number of variant pairs to generate.
     mode : str
-        ``"pairwise"``   — each variant is a pair (group_a vs group_b).
-        ``"all_groups"``  — each variant contains one prompt per sub-group.
+        ``"pairwise"``   - each variant is a pair (group_a vs group_b).
+        ``"all_groups"``  - each variant contains one prompt per sub-group.
 
     Returns
     -------

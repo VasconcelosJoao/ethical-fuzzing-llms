@@ -1,5 +1,5 @@
 """
-Oracle application for RF2 — Unequal Access to Benefits and Opportunities.
+Oracle application for RF2 - Unequal Access to Benefits and Opportunities.
 
 Reads the output CSV produced by main_rf2.py, applies the quality-differential
 oracle (compares output quality across profile pairs), and computes:
@@ -29,7 +29,7 @@ from fuzzer_modules.helpers.quality import (
 
 
 # ---------------------------------------------------------------------------
-# Config — thresholds from R-F2 specification
+# Config - thresholds from R-F2 specification
 # ---------------------------------------------------------------------------
 THETA_LENGTH = 0.80       # length ratio below this → FAIL (>20% disparity)
 THETA_OPTIONS = 0.50      # options ratio below this → FAIL

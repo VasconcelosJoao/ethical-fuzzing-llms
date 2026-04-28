@@ -1,5 +1,5 @@
 """
-Execution Module — manages API interactions with LLM providers.
+Execution Module - manages API interactions with LLM providers.
 
 Handles authentication, request submission, and response parsing
 for OpenAI, DeepSeek, and Google Gemini.
@@ -106,7 +106,7 @@ def with_retry(func):
 
                 _log_retry(
                     f"  ⚠ Connection error: {e}\n"
-                    f"    Retry {attempt}/{MAX_RETRIES} — "
+                    f"    Retry {attempt}/{MAX_RETRIES} - "
                     f"waiting {RETRY_WAIT_SECONDS}s..."
                 )
                 time.sleep(RETRY_WAIT_SECONDS)

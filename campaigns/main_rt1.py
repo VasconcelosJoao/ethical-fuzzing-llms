@@ -1,5 +1,5 @@
 """
-main_rt1.py — Executes the RT1 (Decision Opacity) fuzzing campaign.
+main_rt1.py - Executes the RT1 (Decision Opacity) fuzzing campaign.
 
 Two execution modes:
 
@@ -117,7 +117,7 @@ def main():
         )
 
         for row in seeds_df.itertuples():
-            print(f"[RT1] {provider}/{model} — {row.seed_id} ({row.test_mode})...")
+            print(f"[RT1] {provider}/{model} - {row.seed_id} ({row.test_mode})...")
             variants = variant_cache[row.seed_id]
 
             for variant in variants:

@@ -1,5 +1,5 @@
 """
-Oracle application for RT1 — Decision Opacity.
+Oracle application for RT1 - Decision Opacity.
 
 Evaluates two CSVs per provider:
   - rt1_meta_*.csv  → metamorphic consistency (explanations for similar decisions)
@@ -40,7 +40,7 @@ THETA_ACCESSIBILITY = 0.50  # accessibility below this → FAIL
 
 
 # ---------------------------------------------------------------------------
-# Oracle labelling — metamorphic
+# Oracle labelling - metamorphic
 # ---------------------------------------------------------------------------
 
 def label_metamorphic(df: pd.DataFrame) -> pd.DataFrame:
@@ -88,7 +88,7 @@ def label_metamorphic(df: pd.DataFrame) -> pd.DataFrame:
 
 
 # ---------------------------------------------------------------------------
-# Oracle labelling — explanation
+# Oracle labelling - explanation
 # ---------------------------------------------------------------------------
 
 def label_explanation(df: pd.DataFrame) -> pd.DataFrame:

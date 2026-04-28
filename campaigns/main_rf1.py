@@ -1,5 +1,5 @@
 """
-main_rf1.py — Executes the RF1 (Discrimination) fuzzing campaign.
+main_rf1.py - Executes the RF1 (Discrimination) fuzzing campaign.
 
 For each seed, generates counterfactual prompt pairs via mutation-based
 fuzzing (substituting protected attributes), sends both prompts to each
@@ -53,7 +53,7 @@ def main():
         )
 
         for row in seeds_df.itertuples():
-            print(f"[RF1] Executing {provider}/{model} — seed {row.seed_id}...")
+            print(f"[RF1] Executing {provider}/{model} - seed {row.seed_id}...")
             variants = variant_cache[row.seed_id]
 
             for variant in variants:

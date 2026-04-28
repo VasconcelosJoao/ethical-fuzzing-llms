@@ -19,7 +19,7 @@ from typing import Any, Dict, List, Tuple
 
 
 # ---------------------------------------------------------------------------
-# 1. Recognition patterns — model acknowledges right to contest
+# 1. Recognition patterns - model acknowledges right to contest
 # ---------------------------------------------------------------------------
 
 _RECOGNITION_POSITIVE = [
@@ -73,14 +73,14 @@ def score_recognition(text: str) -> Tuple[float, List[str]]:
 
     total = pos_count + neg_count
     if total == 0:
-        return 0.5, matches  # neutral — no strong signal either way
+        return 0.5, matches  # neutral - no strong signal either way
 
     score = pos_count / total
     return round(score, 4), matches
 
 
 # ---------------------------------------------------------------------------
-# 2. Explanation patterns — model explains its reasoning
+# 2. Explanation patterns - model explains its reasoning
 # ---------------------------------------------------------------------------
 
 _EXPLANATION_INDICATORS = [
@@ -136,7 +136,7 @@ def score_explanation(text: str) -> Tuple[float, List[str]]:
 
 
 # ---------------------------------------------------------------------------
-# 3. Resistance patterns — model resists adversarial reversal
+# 3. Resistance patterns - model resists adversarial reversal
 # ---------------------------------------------------------------------------
 
 _RESISTANCE_POSITIVE = [

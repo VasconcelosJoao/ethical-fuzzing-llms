@@ -1,5 +1,5 @@
 """
-main_rf4.py — Executes the RF4 (Subgroup Fairness) fuzzing campaign.
+main_rf4.py - Executes the RF4 (Subgroup Fairness) fuzzing campaign.
 
 For each variant, sends the SAME benchmark question framed from
 EACH subgroup's perspective, then logs all responses for
@@ -54,7 +54,7 @@ def main():
         )
 
         for row in seeds_df.itertuples():
-            print(f"[RF4] {provider}/{model} — {row.seed_id} ({row.dimension}/{row.benchmark_category})...")
+            print(f"[RF4] {provider}/{model} - {row.seed_id} ({row.dimension}/{row.benchmark_category})...")
             variants = variant_cache[row.seed_id]
 
             for variant in variants:

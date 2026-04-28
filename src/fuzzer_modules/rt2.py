@@ -1,10 +1,10 @@
 """
-RT2 Fuzzer Module — Mutation-based + Differential Fuzzing
+RT2 Fuzzer Module - Mutation-based + Differential Fuzzing
 for Hidden Bias Detection.
 
 Generates counterfactual pairs where ONLY an IRRELEVANT attribute
 differs between prompts. If the model's output changes, it reveals
-hidden/implicit biases — the model is influenced by information
+hidden/implicit biases - the model is influenced by information
 that should have no bearing on the decision.
 
 Key difference from RF1:

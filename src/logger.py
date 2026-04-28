@@ -1,5 +1,5 @@
 """
-Logging Component — records all test executions in structured JSONL.
+Logging Component - records all test executions in structured JSONL.
 
 Each record includes: timestamp, run_id, event_type, and event-specific
 payload (prompts, responses, metadata). Enables reproducibility and

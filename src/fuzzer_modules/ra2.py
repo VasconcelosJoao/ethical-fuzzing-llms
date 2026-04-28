@@ -1,5 +1,5 @@
 """
-RA2 Fuzzer Module — Generation-based + Adversarial Fuzzing
+RA2 Fuzzer Module - Generation-based + Adversarial Fuzzing
 for Contestability Detection.
 
 Generates multi-turn test conversations:

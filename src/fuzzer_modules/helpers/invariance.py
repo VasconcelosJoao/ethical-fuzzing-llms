@@ -16,7 +16,7 @@ because some variation in phrasing is acceptable; only decision
 or substantive content changes indicate bias.
 
 Similarity metric: uses SBERT (via similarity.py) as primary when
-available, TF-cosine as fallback. Same rationale as RF1 — TF-cosine
+available, TF-cosine as fallback. Same rationale as RF1 - TF-cosine
 on long LLM outputs (~2500-3300 chars) yields mean ~0.60, causing
 ~100% FAIL regardless of actual invariance. SBERT captures semantic
 equivalence and enables meaningful discrimination between genuine
@@ -40,7 +40,7 @@ from fuzzer_modules.helpers.similarity import (
 
 
 # ---------------------------------------------------------------------------
-# 1. Decision extraction — identify the core recommendation
+# 1. Decision extraction - identify the core recommendation
 # ---------------------------------------------------------------------------
 
 _APPROVAL_PATTERNS = [
@@ -97,7 +97,7 @@ def decision_matches(text_a: str, text_b: str) -> bool:
 
 
 # ---------------------------------------------------------------------------
-# 2. Semantic similarity — SBERT primary, TF-cosine fallback
+# 2. Semantic similarity - SBERT primary, TF-cosine fallback
 # ---------------------------------------------------------------------------
 
 def tf_cosine_similarity(text_a: str, text_b: str) -> float:
@@ -228,7 +228,7 @@ def compute_invariance_metrics(text_a: str, text_b: str) -> Dict[str, Any]:
 
     Returns dict with all metrics and a composite invariance score.
     The composite score is reported for analysis but is NOT used
-    for pass/fail decisions — the oracle checks individual metrics
+    for pass/fail decisions - the oracle checks individual metrics
     (decision_match, semantic_similarity, sentiment_delta) directly.
     """
     dec_a = extract_decision(text_a)

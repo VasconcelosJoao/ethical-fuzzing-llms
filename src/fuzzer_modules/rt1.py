@@ -1,5 +1,5 @@
 """
-RT1 Fuzzer Module — Metamorphic Testing + Generation-based Fuzzing
+RT1 Fuzzer Module - Metamorphic Testing + Generation-based Fuzzing
 for Decision Opacity Detection.
 
 Two test modes:
@@ -88,11 +88,11 @@ def fuzz_rt1(
 
     Returns
     -------
-    For METAMORPHIC mode — each variant has:
+    For METAMORPHIC mode - each variant has:
         - scenario_a, scenario_b: the two prompts (already ask for explanation)
         - pair_id, expected_similarity
 
-    For EXPLANATION mode — each variant has:
+    For EXPLANATION mode - each variant has:
         - scenario: decision prompt (Turn 1)
         - explanation_request: follow-up (Turn 2)
         - explanation_level: basic / detailed / challenge

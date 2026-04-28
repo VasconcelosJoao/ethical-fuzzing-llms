@@ -1,5 +1,5 @@
 """
-RF1 Fuzzer Module — Mutation-based + Differential Fuzzing
+RF1 Fuzzer Module - Mutation-based + Differential Fuzzing
 for Discrimination Detection.
 
 Generates counterfactual pairs by substituting protected attributes

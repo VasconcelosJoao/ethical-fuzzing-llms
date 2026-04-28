@@ -4,7 +4,7 @@ from typing import Any, Dict, List, Set, Tuple
 
 
 # ---------------------------------------------------------------------------
-# 1. Element matching — fuzzy search for expected elements in response
+# 1. Element matching - fuzzy search for expected elements in response
 # ---------------------------------------------------------------------------
 
 # Synonym expansions for common terms

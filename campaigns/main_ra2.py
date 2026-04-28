@@ -1,5 +1,5 @@
 """
-main_ra2.py — Executes the RA2 (Contestability) fuzzing campaign.
+main_ra2.py - Executes the RA2 (Contestability) fuzzing campaign.
 
 Unlike RF1/RF2 (single-turn pairs), RA2 runs MULTI-TURN conversations:
   Turn 1: User presents scenario → model makes a decision
@@ -122,7 +122,7 @@ def main():
         )
 
         for row in seeds_df.itertuples():
-            print(f"[RA2] Executing {provider}/{model} — seed {row.seed_id} ({row.test_type}/{row.register})...")
+            print(f"[RA2] Executing {provider}/{model} - seed {row.seed_id} ({row.test_type}/{row.register})...")
             variants = variant_cache[row.seed_id]
 
             for variant in variants:

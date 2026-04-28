@@ -1,5 +1,5 @@
 """
-main_rt2.py — Executes the RT2 (Hidden Biases) fuzzing campaign.
+main_rt2.py - Executes the RT2 (Hidden Biases) fuzzing campaign.
 
 For each seed, generates counterfactual pairs where ONLY an irrelevant
 attribute differs, sends both prompts to each provider, and logs
@@ -59,7 +59,7 @@ def main():
         )
 
         for row in seeds_df.itertuples():
-            print(f"[RT2] {provider}/{model} — {row.seed_id} ({row.perturbation_category}/{row.domain})...")
+            print(f"[RT2] {provider}/{model} - {row.seed_id} ({row.perturbation_category}/{row.domain})...")
             variants = variant_cache[row.seed_id]
 
             for variant in variants:

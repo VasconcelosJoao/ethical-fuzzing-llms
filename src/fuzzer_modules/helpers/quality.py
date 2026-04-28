@@ -1,5 +1,5 @@
 """
-Quality metrics helper for RF2 — Unequal Access to Benefits and Opportunities.
+Quality metrics helper for RF2 - Unequal Access to Benefits and Opportunities.
 
 Compares response quality across socioeconomic/education/geographic profiles.
 Measures: length ratio, options/list items ratio, resource mentions ratio,
@@ -92,7 +92,7 @@ def count_resources(text: str) -> int:
 #
 # RF2 evaluates whether the model gives different QUALITY of assistance
 # to users from different socioeconomic/educational backgrounds. The
-# lexicon captures MOTIVATIONAL TONE — is the model encouraging the
+# lexicon captures MOTIVATIONAL TONE - is the model encouraging the
 # user to pursue opportunities, or dismissive?
 #
 #   ENCOURAGING = empowering, opportunity-focused language

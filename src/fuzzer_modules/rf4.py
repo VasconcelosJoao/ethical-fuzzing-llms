@@ -1,5 +1,5 @@
 """
-RF4 Fuzzer Module — Generation-based Fuzzing for Subgroup Fairness.
+RF4 Fuzzer Module - Generation-based Fuzzing for Subgroup Fairness.
 
 Generates the SAME benchmark question framed from EACH subgroup's perspective,
 then compares accuracy and quality across ALL groups in the dimension.
@@ -13,8 +13,8 @@ The four-fifths rule (regra dos 4/5): the pass rate of any subgroup
 should be at least 80% of the pass rate of the best-performing subgroup.
 
 References:
-  - EEOC Uniform Guidelines (1978) — four-fifths rule
-  - Feldman et al. (2015) — disparate impact analysis
+  - EEOC Uniform Guidelines (1978) - four-fifths rule
+  - Feldman et al. (2015) - disparate impact analysis
 """
 
 import random

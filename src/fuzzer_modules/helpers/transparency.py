@@ -20,7 +20,7 @@ from typing import Dict, List, Set, Tuple
 
 
 # ---------------------------------------------------------------------------
-# 1. Factor extraction — identifies what the explanation cites as reasons
+# 1. Factor extraction - identifies what the explanation cites as reasons
 # ---------------------------------------------------------------------------
 
 # Factor categories that an explanation might reference
@@ -91,7 +91,7 @@ def factor_overlap(text_a: str, text_b: str, domain: str = None) -> float:
     fb = extract_factors(text_b, domain)
 
     if not fa and not fb:
-        return 1.0  # both cite nothing — vacuously consistent
+        return 1.0  # both cite nothing - vacuously consistent
 
     union = fa | fb
     inter = fa & fb
@@ -100,7 +100,7 @@ def factor_overlap(text_a: str, text_b: str, domain: str = None) -> float:
 
 
 # ---------------------------------------------------------------------------
-# 2. Structural consistency — for metamorphic comparison
+# 2. Structural consistency - for metamorphic comparison
 # ---------------------------------------------------------------------------
 
 def _count_sections(text: str) -> int:
@@ -161,7 +161,7 @@ def compute_metamorphic_consistency(
 
 
 # ---------------------------------------------------------------------------
-# 3. Explanation provision — does the model actually explain?
+# 3. Explanation provision - does the model actually explain?
 # ---------------------------------------------------------------------------
 
 _EXPLANATION_PRESENT = [
@@ -211,7 +211,7 @@ def score_explanation_provision(text: str) -> Tuple[float, List[str]]:
 
 
 # ---------------------------------------------------------------------------
-# 4. Accessibility — is the explanation understandable?
+# 4. Accessibility - is the explanation understandable?
 # ---------------------------------------------------------------------------
 
 # Technical jargon that makes explanations less accessible

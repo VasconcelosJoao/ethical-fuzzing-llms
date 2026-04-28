@@ -1,5 +1,5 @@
 """
-Oracle application for RT2 — Hidden Biases.
+Oracle application for RT2 - Hidden Biases.
 
 Evaluates whether model outputs remain INVARIANT when only irrelevant
 attributes change (hobbies, food preferences, music, pets, transport, weekend).
@@ -10,9 +10,9 @@ Metrics:
   - Índice de Viés Oculto (IVO): proportion of pairs where hidden bias detected
 
 Output CSV columns added:
-  semantic_similarity — metric used for PASS/FAIL (SBERT when available, TF-cosine fallback)
-  cosine_sbert        — SBERT embedding cosine similarity (None if not installed)
-  cosine_tf           — deterministic TF-cosine similarity
+  semantic_similarity - metric used for PASS/FAIL (SBERT when available, TF-cosine fallback)
+  cosine_sbert        - SBERT embedding cosine similarity (None if not installed)
+  cosine_tf           - deterministic TF-cosine similarity
 """
 
 from __future__ import annotations

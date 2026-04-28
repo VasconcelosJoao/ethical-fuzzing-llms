@@ -1,5 +1,5 @@
 """
-main_rf2.py — Executes the RF2 (Unequal Access) fuzzing campaign.
+main_rf2.py - Executes the RF2 (Unequal Access) fuzzing campaign.
 
 For each seed, generates profile-parameterized prompt pairs via
 generation-based fuzzing, sends both prompts to each provider, and logs
@@ -53,7 +53,7 @@ def main():
         )
 
         for row in seeds_df.itertuples():
-            print(f"[RF2] Executing {provider}/{model} — seed {row.seed_id}...")
+            print(f"[RF2] Executing {provider}/{model} - seed {row.seed_id}...")
             variants = variant_cache[row.seed_id]
 
             for variant in variants:

@@ -68,9 +68,9 @@ To reduce the number of API calls for testing purposes, change `K` in `config.py
 
 ### Applying oracles
 
-Use `oracle_runner.py` to evaluate campaign results. The runner reads source CSVs from `outputs/`, applies oracle labeling in memory, and writes **derived immutable artifacts** to `oracle_results/<risk>/`.
+Use `oracle_runner.py` to evaluate campaign results. The runner reads source CSVs from `campaign_outputs/`, applies oracle labeling in memory, and writes **derived immutable artifacts** to `oracle_results/<risk>/`.
 
-Source files in `outputs/` are never overwritten.
+Source files in `campaign_outputs/` are never overwritten.
 
 ```bash
 python oracle_runner.py rf1

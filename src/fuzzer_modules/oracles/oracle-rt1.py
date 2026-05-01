@@ -64,6 +64,8 @@ def label_metamorphic(df: pd.DataFrame) -> pd.DataFrame:
         acc_delta_list.append(m["accessibility_delta"])
 
         fail = []
+        if m.get("no_factors_detected", False):
+            fail.append("no_factors_detected")
         if m["consistency_score"] < THETA_CONSISTENCY:
             fail.append(f"consistency={m['consistency_score']:.3f}<{THETA_CONSISTENCY}")
         if m["accessibility_delta"] > 0.40:

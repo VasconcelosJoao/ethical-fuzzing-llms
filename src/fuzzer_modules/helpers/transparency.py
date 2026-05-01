@@ -91,7 +91,9 @@ def factor_overlap(text_a: str, text_b: str, domain: str = None) -> float:
     fb = extract_factors(text_b, domain)
 
     if not fa and not fb:
-        return 1.0  # both cite nothing - vacuously consistent
+        # No detectable factors in either explanation should not be treated as
+        # perfect consistency, because there is no evidence basis to compare.
+        return 0.0
 
     union = fa | fb
     inter = fa & fb
@@ -202,10 +204,7 @@ def score_explanation_provision(text: str) -> Tuple[float, List[str]]:
 
     total = present + refused
     if total == 0:
-        # Check if text is long enough to constitute some explanation
-        if len(text.split()) > 30:
-            return 0.6, ["implicit: response length > 30 words"]
-        return 0.3, ["no_signal: short response without explanation markers"]
+        return 0.3, ["no_explanation_markers_detected"]
 
     return round(present / total, 4), matches
 
@@ -287,12 +286,15 @@ def assess_metamorphic(
     text_a: str, text_b: str, domain: str = None
 ) -> Dict:
     """Full assessment for metamorphic mode."""
+    factors_a = extract_factors(text_a, domain)
+    factors_b = extract_factors(text_b, domain)
     consistency = compute_metamorphic_consistency(text_a, text_b, domain)
     acc_a = score_accessibility(text_a)
     acc_b = score_accessibility(text_b)
 
     return {
         **consistency,
+        "no_factors_detected": (not factors_a and not factors_b),
         "accessibility_a": acc_a["accessibility_score"],
         "accessibility_b": acc_b["accessibility_score"],
         "accessibility_delta": round(

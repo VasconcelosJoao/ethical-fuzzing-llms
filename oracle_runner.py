@@ -163,6 +163,35 @@ def infer_string_series(df: pd.DataFrame, candidates: list[str], default: str = 
     return pd.Series([default] * len(df), index=df.index, dtype="object")
 
 
+def _normalize_identifier_values(series: pd.Series) -> set[str]:
+    values = series.fillna("").astype(str).str.strip().str.lower()
+    return {v for v in values.unique().tolist() if v}
+
+
+def _identifier_warning(
+    *,
+    field_name: str,
+    expected: str,
+    observed_values: set[str],
+    source_path: Path,
+) -> str | None:
+    if not observed_values:
+        return (
+            f"[WARN] {source_path.name}: CSV column '{field_name}' is missing/empty. "
+            f"Falling back to filename value '{expected}'."
+        )
+
+    expected_norm = expected.strip().lower()
+    if observed_values == {expected_norm}:
+        return None
+
+    observed = ", ".join(sorted(observed_values))
+    return (
+        f"[WARN] {source_path.name}: filename {field_name}='{expected_norm}' differs from "
+        f"CSV values {{{observed}}}. Using CSV as canonical source."
+    )
+
+
 def build_output_filename(info: CampaignFileInfo) -> str:
     model_norm = info.model.lower()
     if info.risk == "rt1" and info.variant:
@@ -180,6 +209,7 @@ def build_minimal_result_frame(
     info: CampaignFileInfo,
     oracle_name: str,
     threshold_blob: str,
+    consistency_warnings: list[str] | None = None,
 ) -> pd.DataFrame:
     """Build a minimal derived frame.
 
@@ -195,8 +225,34 @@ def build_minimal_result_frame(
     base_cols = ["provider", "model", "seed_id", "variant_id", "is_fail", "fail_reason"]
 
     out = pd.DataFrame(index=df.index)
-    out["provider"] = info.provider
-    out["model"] = info.model
+
+    provider_series = infer_string_series(df, ["provider"], default=info.provider)
+    model_series = infer_string_series(df, ["model"], default=info.model)
+
+    provider_values = _normalize_identifier_values(provider_series)
+    model_values = _normalize_identifier_values(model_series)
+
+    provider_warn = _identifier_warning(
+        field_name="provider",
+        expected=info.provider,
+        observed_values=provider_values,
+        source_path=info.source_path,
+    )
+    model_warn = _identifier_warning(
+        field_name="model",
+        expected=info.model,
+        observed_values=model_values,
+        source_path=info.source_path,
+    )
+
+    if consistency_warnings is not None:
+        if provider_warn:
+            consistency_warnings.append(provider_warn)
+        if model_warn:
+            consistency_warnings.append(model_warn)
+
+    out["provider"] = provider_series
+    out["model"] = model_series
     out["seed_id"] = infer_string_series(df, ["seed_id"])
     out["variant_id"] = infer_string_series(df, ["variant_id"], default=info.variant or "")
     out["is_fail"] = is_fail
@@ -321,12 +377,19 @@ def run_oracle(module: str, stats: RunStats, on_conflict: str) -> None:
             df = pd.read_csv(info.source_path)
             label_fn = get_label_function(oracle_mod, module, info.variant)
             df_labeled = label_fn(df)
+            consistency_warnings: list[str] = []
             df_derived = build_minimal_result_frame(
                 df_labeled,
                 info=info,
                 oracle_name=oracle_name,
                 threshold_blob=threshold_blob,
+                consistency_warnings=consistency_warnings,
             )
+
+            for msg in consistency_warnings:
+                print(msg, flush=True)
+                module_stats.inconsistencies.append(msg)
+                stats.inconsistencies.append(msg)
 
             risk_output_dir = OUTPUT_ROOT / module
             risk_output_dir.mkdir(parents=True, exist_ok=True)
@@ -355,7 +418,9 @@ def run_oracle(module: str, stats: RunStats, on_conflict: str) -> None:
             module_stats.rows_fail += fails
             module_stats.save_paths.append(str(destination))
             stats.save_paths.append(str(destination))
-            stats.combinations.add((module, info.provider, info.model))
+            combinations = df_derived[["provider", "model"]].drop_duplicates()
+            for row in combinations.itertuples(index=False):
+                stats.combinations.add((module, str(row.provider), str(row.model)))
 
             print(f"  -> {total} rows, {fails} failures ({rate:.1%})", flush=True)
             print(f"  -> saved derived file: {destination}", flush=True)

@@ -334,11 +334,6 @@ with st.sidebar:
         label_visibility="collapsed",
     )
 
-    st.divider()
-    st.caption("UnB/PPGI - Dissertação de Mestrado")
-    st.caption("João Lucas Pinto Vasconcelos")
-
-
 # ---------------------------------------------------------------------------
 # PAGE: Overview
 # ---------------------------------------------------------------------------

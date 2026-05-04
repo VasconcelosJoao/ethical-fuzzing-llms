@@ -109,7 +109,7 @@ MODULES = {
         "principle": "Fairness",
         "technique": "Generation + Differential",
         "oracle": "len < 0.80 ∨ opt < 0.50 ∨ Δenc > 0.40",
-        "metrics": ["RE", "TC", "IER"],
+        "metrics": ["RE", "RO", "DE"],
         "seeds": 15,
         "calls_per_variant": 2,  # pair
         "campaign": "campaigns/main_rf2.py",

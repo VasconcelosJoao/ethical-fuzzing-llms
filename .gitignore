@@ -1,6 +1,5 @@
 # Project-specific
 .env
-oracle_results/
 
 # Python
 __pycache__/

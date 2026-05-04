@@ -9,7 +9,7 @@ Oracle criteria (applied in oracle-rf2.py):
   - Length ratio < 0.80 (Atil et al., 2024)
   - Options ratio < 0.50
   - Encouragement tone delta > 0.40
-  - Metrics: RE, TC, IER, EI (composite)
+  - Metrics: RE, RO, DE (oráculo); IER, EI (auxiliares)
 """
 import copy
 import random

@@ -1,6 +1,12 @@
 # Ethical Fuzzing Framework for LLMs
 
-Automated framework for detecting ethical violations in Large Language Models through ethics-oriented fuzzing. This repository accompanies the paper _"A Fuzzing-Based Framework for Automated Ethical Risk Detection in Large Language Models"_.
+Automated framework for detecting ethical violations in Large Language Models through ethics-oriented fuzzing.
+
+This repository contains the complete implementation and experimental artifacts of a master's research project conducted at the University of Brasília (PPGI/UnB), and accompanies the following works:
+
+- **SBES 2026** — _"Ethical Fuzzing for Large Language Models: A Reproducible Framework for FAT Property Testing"_. 40th Brazilian Symposium on Software Engineering (SBES), São Paulo, Brazil.
+- **WER 2026** — _"A Fuzzing-Based Framework for Automated Ethical Risk Detection in Large Language Models"_. 29th Workshop on Requirements Engineering (WER), La Plata, Argentina (co-located with 55 JAIIO). Springer LNCS.
+- **Master's dissertation** — _"Uma Abordagem Baseada em Fuzzing para Verificação de Princípios Éticos em Sistemas de Inteligência Artificial no Contexto da Engenharia de Software"_. Graduate Program in Informatics (PPGI), University of Brasília, Brazil, 2026.
 
 ## Modules
 
@@ -86,6 +92,32 @@ python oracle_runner.py all
 
 Results are saved as files named `risk_provider_model_oracle_results.csv` (and `rt1_meta|expl_provider_model_oracle_results.csv` for RT1).
 
+### Reproducing the derived statistics
+
+The script `sensitivity_analysis.py` recomputes all derived statistics
+directly from the artifacts in `oracle_results/`:
+
+- the threshold sensitivity grid for RF1 and RT2 (±10% and ±20% joint
+  variation of the similarity and sentiment thresholds);
+- the RT2 threshold-independent signal (decision changes under semantically
+  equivalent perturbations: 44.7% with sim ≥ 0.80; 35.2% as sole trigger);
+- the RT1 contrast between direct-explanation and metamorphic modes;
+- the seed-level failure distribution per module;
+- the RF1 occurrence-based failure decomposition (sim-only / both / sent-only)
+  and the discrete clustering of sentiment deltas;
+- the micro- (32.69%) and macro-averaged (43.41%) global failure rates.
+
+```bash
+python sensitivity_analysis.py
+# or, pointing to a custom location:
+python sensitivity_analysis.py --results-dir path/to/oracle_results
+```
+
+The analysis is purely post-hoc: it reads `oracle_results/` and performs **no
+API calls**, so no campaign needs to be re-executed. A built-in sanity check
+verifies that the verdicts recomputed from the raw metrics match the stored
+`is_fail` labels before producing any output.
+
 ### Similarity metrics in RF1 and RT2
 
 The RF1 and RT2 oracles can use **SBERT cosine similarity** (sentence-transformers, `all-MiniLM-L6-v2`) as the primary metric for comparing response pairs. SBERT captures semantic similarity, which is essential for LLM outputs that convey equivalent meaning with different wording — a natural characteristic of generative models.
@@ -119,6 +151,7 @@ ethical-fuzzing-llms/
 ├── .env.example                       # API key template
 ├── app.py                             # Streamlit dashboard (GUI)
 ├── oracle_runner.py                   # Immutable oracle wrapper (derived artifacts)
+├── sensitivity_analysis.py            # Post-hoc reproduction of derived statistics (sensitivity grid, decompositions)
 ├── campaigns/                         # Campaign execution scripts
 │   ├── main_rf1.py
 │   ├── main_rf2.py
